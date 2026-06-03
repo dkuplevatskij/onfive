@@ -1,11 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { motion, type Variants } from "framer-motion";
-import { Brain, Target, Flame, BookOpen, GraduationCap, Sparkles, ChevronRight } from "lucide-react";
+import { Brain, Target, Flame, BookOpen, ListChecks, Trophy, ChevronRight, Gift } from "lucide-react";
 import { useUserStore } from "../stores/user";
 import { levelFromXp } from "../lib/level";
 import { Button } from "../components/ui/Button";
 import { Spark } from "../components/ui/Spark";
-import { CountUp } from "../components/ui/CountUp";
 
 /** Контейнер со stagger-появлением дочерних элементов. */
 const stagger: Variants = {
@@ -97,6 +96,9 @@ function Dashboard({
 }) {
   const level = levelFromXp(xp);
   const pct = Math.round(level.progress * 100);
+  const streak = useUserStore((s) => s.streak);
+  const dailyBonusDate = useUserStore((s) => s.dailyBonusDate);
+  const bonusAvailable = dailyBonusDate !== new Date().toISOString().slice(0, 10);
 
   return (
     <motion.div variants={stagger} initial="hidden" animate="show">
@@ -110,7 +112,7 @@ function Dashboard({
             <h1 className="mt-1 font-display text-2xl font-extrabold">{level.title}</h1>
           </div>
           <div className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-sm font-bold backdrop-blur">
-            <Flame size={15} className="text-amber" /> <span className="tabular-nums">1</span>
+            <Flame size={15} className="text-amber" /> <span className="tabular-nums">{streak}</span>
           </div>
         </div>
 
@@ -152,25 +154,40 @@ function Dashboard({
 
         <motion.button
           variants={rise}
-          onClick={() => navigate("/onboarding")}
+          onClick={() => navigate("/tasks")}
           className="press flex flex-col items-start gap-2 rounded-[var(--radius-card)] bg-surface p-5 text-left shadow-soft hover:shadow-glow"
         >
-          <GraduationCap className="text-blue" />
-          <span className="font-bold tracking-tight">Класс</span>
-          <span className="text-sm text-ink-soft">{grade}-й</span>
+          <ListChecks className="text-teal" />
+          <span className="font-bold tracking-tight">Задания</span>
+          <span className="text-sm text-ink-soft">Миссии дня</span>
         </motion.button>
 
-        <motion.div
+        <motion.button
           variants={rise}
-          className="flex flex-col items-start gap-2 rounded-[var(--radius-card)] bg-surface p-5 shadow-soft"
+          onClick={() => navigate("/leaderboard")}
+          className="press flex flex-col items-start gap-2 rounded-[var(--radius-card)] bg-surface p-5 text-left shadow-soft hover:shadow-glow"
         >
-          <Sparkles className="text-violet" />
-          <span className="font-bold tracking-tight">Опыт</span>
-          <span className="text-sm text-ink-soft">
-            <CountUp value={xp} /> XP всего
-          </span>
-        </motion.div>
+          <Trophy className="text-amber" />
+          <span className="font-bold tracking-tight">Рейтинг</span>
+          <span className="text-sm text-ink-soft">Топ учеников</span>
+        </motion.button>
       </div>
+
+      {bonusAvailable && (
+        <motion.button
+          variants={rise}
+          onClick={() => navigate("/tasks")}
+          className="press mt-3 flex w-full items-center gap-3 rounded-[var(--radius-card)] bg-surface p-4 text-left shadow-soft hover:shadow-glow"
+        >
+          <div className="aurora grid h-11 w-11 place-items-center rounded-xl text-white">
+            <Gift size={20} />
+          </div>
+          <div>
+            <div className="font-bold tracking-tight">Забери ежедневный бонус</div>
+            <div className="text-sm text-ink-soft">+100 XP · +5 монет за вход</div>
+          </div>
+        </motion.button>
+      )}
     </motion.div>
   );
 }

@@ -1,16 +1,23 @@
 import { Outlet, Link } from "react-router-dom";
-import { Sparkles, Sun, Moon } from "lucide-react";
+import { Sparkles, Sun, Moon, Coins } from "lucide-react";
+import { useEffect } from "react";
 import { useUserStore } from "../stores/user";
 import { useApplyTheme } from "../hooks/useTheme";
 import { Spark } from "../components/ui/Spark";
 import { CountUp } from "../components/ui/CountUp";
 
-/** Каркас приложения: липкая стеклянная шапка с брендом, темой и XP-орбом. */
+/** Каркас приложения: липкая стеклянная шапка с брендом, темой, монетами и XP. */
 export function Layout() {
   useApplyTheme();
   const xp = useUserStore((s) => s.xp);
+  const coins = useUserStore((s) => s.coins);
   const theme = useUserStore((s) => s.theme);
   const toggleTheme = useUserStore((s) => s.toggleTheme);
+  const checkIn = useUserStore((s) => s.checkIn);
+
+  useEffect(() => {
+    checkIn();
+  }, [checkIn]);
 
   return (
     <div className="mx-auto flex min-h-full max-w-2xl flex-col">
@@ -30,6 +37,10 @@ export function Layout() {
           >
             {theme === "dark" ? <Sun size={17} /> : <Moon size={17} />}
           </button>
+          <div className="flex items-center gap-1 rounded-full bg-surface px-3 py-1.5 text-sm font-bold shadow-soft">
+            <Coins size={15} className="text-amber" />
+            <CountUp value={coins} />
+          </div>
           <div className="flex items-center gap-1.5 rounded-full bg-chip px-3.5 py-1.5 text-sm font-bold text-[var(--color-on-chip)]">
             <Sparkles size={15} className="text-violet" />
             <CountUp value={xp} />
@@ -37,7 +48,7 @@ export function Layout() {
           </div>
         </div>
       </header>
-      <main className="flex-1 px-5 py-6">
+      <main className="flex-1">
         <Outlet />
       </main>
     </div>

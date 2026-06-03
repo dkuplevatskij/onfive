@@ -2,10 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { Navigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Mic, Send } from "lucide-react";
-import { XP } from "@onfive/shared";
 import type { ChatContext, ChatMessage, LearningMode, SubjectId } from "@onfive/shared";
-import { useUserStore } from "../stores/user";
-import { sendChat } from "../lib/api";
+import { useUserStore } from "../stores/user";import { sendChat } from "../lib/api";
 import { useSpeech } from "../hooks/useSpeech";
 import { Markdown } from "../components/chat/Markdown";
 
@@ -13,7 +11,7 @@ import { Markdown } from "../components/chat/Markdown";
 export function Chat() {
   const [params] = useSearchParams();
   const grade = useUserStore((s) => s.grade);
-  const addXp = useUserStore((s) => s.addXp);
+  const recordMessage = useUserStore((s) => s.recordMessage);
 
   const subject = params.get("subject") as SubjectId | null;
   const mode = params.get("mode") as LearningMode | null;
@@ -50,7 +48,7 @@ export function Chat() {
     try {
       const reply = await sendChat(context, next);
       setMessages([...next, { role: "assistant", content: reply }]);
-      addXp(XP.perMessage);
+      recordMessage();
     } catch {
       setError("Не удалось получить ответ. Проверь, что сервер запущен.");
     } finally {
