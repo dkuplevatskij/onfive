@@ -26,6 +26,10 @@ interface UserState {
   theme: Theme;
   /** Цели из онбординг-квиза (для персонализации). */
   goals: string[];
+  /** Семейный код для привязки родителя (ONF5-XXXXXX). */
+  familyCode: string;
+  /** PIN родительской панели (4 цифры) или null. */
+  parentPin: string | null;
 
   // Геймификация
   xp: number;
@@ -37,6 +41,7 @@ interface UserState {
 
   setGrade: (grade: Grade) => void;
   setGoals: (goals: string[]) => void;
+  setParentPin: (pin: string) => void;
   toggleTheme: () => void;
 
   /** Отметка входа: обновляет стрик (continuous days). */
@@ -52,6 +57,14 @@ interface UserState {
   recordLesson: () => void;
 
   reset: () => void;
+}
+
+/** Генерирует семейный код вида ONF5-AB12CD. */
+function makeFamilyCode(): string {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let s = "";
+  for (let i = 0; i < 6; i++) s += chars[Math.floor(Math.random() * chars.length)];
+  return `ONF5-${s}`;
 }
 
 const freshDaily = (): DailyCounters => ({
@@ -72,6 +85,8 @@ export const useUserStore = create<UserState>()(
       grade: null,
       theme: "dark",
       goals: [],
+      familyCode: makeFamilyCode(),
+      parentPin: null,
       xp: 0,
       coins: 0,
       streak: 0,
@@ -81,6 +96,7 @@ export const useUserStore = create<UserState>()(
 
       setGrade: (grade) => set({ grade }),
       setGoals: (goals) => set({ goals }),
+      setParentPin: (pin) => set({ parentPin: pin }),
       toggleTheme: () =>
         set((s) => ({ theme: s.theme === "dark" ? "light" : "dark" })),
 
