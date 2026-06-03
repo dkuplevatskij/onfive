@@ -1,33 +1,40 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import { useUserStore } from "../stores/user";
 import { subjectsForGrade } from "../data/subjects";
-import { Card } from "../components/ui/Card";
+import { SUBJECT_COLOR } from "../data/subjectColors";
 
-/** Экран выбора предмета для текущего класса. */
+/** Экран выбора предмета: яркие плитки с цветовым кодом. */
 export function SubjectSelect() {
   const navigate = useNavigate();
   const grade = useUserStore((s) => s.grade);
 
-  if (grade === null) {
-    return <Navigate to="/" replace />;
-  }
+  if (grade === null) return <Navigate to="/" replace />;
 
   const subjects = subjectsForGrade(grade);
 
   return (
     <div>
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">Выбери предмет</h1>
-      <p className="mb-6 text-gray-500">{grade} класс</p>
+      <h1 className="font-display text-3xl font-extrabold tracking-tight">
+        Выбери <span className="aurora-text">предмет</span>
+      </h1>
+      <p className="mb-7 mt-2 text-ink-soft">{grade} класс</p>
+
       <div className="grid grid-cols-2 gap-3">
         {subjects.map((subject) => (
-          <Card
+          <button
             key={subject.id}
             onClick={() => navigate(`/subject/${subject.id}`)}
-            className="flex items-center gap-3"
+            className="press flex flex-col items-start gap-3 rounded-[var(--radius-card)] bg-surface p-4 text-left shadow-soft hover:shadow-glow"
           >
-            <span className="text-2xl">{subject.icon}</span>
-            <span className="font-medium">{subject.title}</span>
-          </Card>
+            <div
+              className={`grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br text-2xl ${SUBJECT_COLOR[subject.id]}`}
+            >
+              {subject.icon}
+            </div>
+            <span className="font-bold leading-tight tracking-tight">
+              {subject.title}
+            </span>
+          </button>
         ))}
       </div>
     </div>

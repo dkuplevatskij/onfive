@@ -1,22 +1,28 @@
 import type { ButtonHTMLAttributes } from "react";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "secondary";
+  variant?: "gradient" | "soft" | "ghost";
+  size?: "md" | "lg";
 };
 
-/** Кнопка в iOS-стиле. */
+/** Кнопка OnFive: фирменный градиент, мягкая или призрачная. */
 export function Button({
-  variant = "primary",
+  variant = "gradient",
+  size = "md",
   className = "",
   ...props
 }: ButtonProps) {
-  const styles =
-    variant === "primary"
-      ? "bg-blue-500 text-white active:bg-blue-600"
-      : "bg-gray-200 text-gray-900 active:bg-gray-300";
+  const styles = {
+    gradient: "aurora text-white shadow-glow",
+    soft: "bg-white text-ink shadow-soft",
+    ghost: "bg-transparent text-ink-soft hover:text-ink",
+  }[variant];
+
+  const sizing = size === "lg" ? "px-7 py-4 text-base" : "px-5 py-3 text-sm";
+
   return (
     <button
-      className={`rounded-xl px-4 py-2.5 font-medium transition active:scale-[0.98] disabled:opacity-50 ${styles} ${className}`}
+      className={`press cursor-pointer rounded-2xl font-bold tracking-tight disabled:opacity-50 ${styles} ${sizing} ${className}`}
       {...props}
     />
   );

@@ -55,13 +55,14 @@ export function Chat() {
 
   return (
     <div className="flex h-[calc(100vh-9rem)] flex-col">
-      <div className="mb-3 text-sm text-gray-500">
-        Тема: <span className="font-medium text-gray-700">{topic}</span>
+      <div className="mb-3 inline-flex w-fit items-center gap-1.5 rounded-full bg-surface px-3 py-1.5 text-sm shadow-soft">
+        <span className="text-ink-faint">Тема:</span>
+        <span className="font-semibold text-ink">{topic}</span>
       </div>
 
       <div className="flex-1 space-y-3 overflow-y-auto pb-4">
         {messages.length === 0 && (
-          <p className="text-gray-400">
+          <p className="text-ink-faint">
             Напиши, с чем нужна помощь — и начнём разбираться вместе. 👇
           </p>
         )}
@@ -71,22 +72,28 @@ export function Chat() {
             className={m.role === "user" ? "flex justify-end" : "flex justify-start"}
           >
             <div
-              className={`max-w-[80%] whitespace-pre-wrap rounded-2xl px-4 py-2.5 ${
+              className={`max-w-[82%] whitespace-pre-wrap rounded-3xl px-4 py-3 ${
                 m.role === "user"
-                  ? "bg-blue-500 text-white"
-                  : "bg-white text-gray-900 shadow-sm"
+                  ? "aurora rounded-br-lg text-white shadow-glow"
+                  : "rounded-bl-lg bg-surface text-ink shadow-soft"
               }`}
             >
               {m.content}
             </div>
           </div>
         ))}
-        {loading && <div className="text-gray-400">OnFive печатает…</div>}
-        {error && <div className="text-red-500">{error}</div>}
+        {loading && (
+          <div className="flex items-center gap-1.5 text-ink-faint">
+            <span className="h-2 w-2 animate-bounce rounded-full bg-violet [animation-delay:-0.2s]" />
+            <span className="h-2 w-2 animate-bounce rounded-full bg-blue" />
+            <span className="h-2 w-2 animate-bounce rounded-full bg-teal [animation-delay:0.2s]" />
+          </div>
+        )}
+        {error && <div className="text-coral">{error}</div>}
         <div ref={bottomRef} />
       </div>
 
-      <div className="flex items-end gap-2 border-t border-black/5 pt-3">
+      <div className="flex items-end gap-2 pt-3">
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -98,9 +105,9 @@ export function Chat() {
           }}
           rows={1}
           placeholder="Твой вопрос…"
-          className="flex-1 resize-none rounded-xl border border-black/10 bg-white px-4 py-2.5 outline-none focus:border-blue-400"
+          className="flex-1 resize-none rounded-2xl border border-hairline bg-surface px-4 py-3 shadow-soft outline-none transition focus:border-violet"
         />
-        <Button onClick={() => void send()} disabled={loading}>
+        <Button onClick={() => void send()} disabled={loading} className="px-4 py-3">
           ➤
         </Button>
       </div>

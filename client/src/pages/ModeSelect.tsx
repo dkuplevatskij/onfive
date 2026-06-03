@@ -3,21 +3,16 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { LEARNING_MODES } from "@onfive/shared";
 import type { LearningMode } from "@onfive/shared";
 import { findSubject } from "../data/subjects";
-import { Card } from "../components/ui/Card";
+import { SUBJECT_COLOR } from "../data/subjectColors";
 
-/**
- * Экран выбора темы и режима обучения.
- * Темы по ФГОС пока не заведены — используется поле «Своя тема».
- */
+/** Экран выбора темы и режима обучения. */
 export function ModeSelect() {
   const navigate = useNavigate();
   const { subjectId = "" } = useParams();
   const subject = findSubject(subjectId);
   const [topic, setTopic] = useState("");
 
-  if (!subject) {
-    return <Navigate to="/subjects" replace />;
-  }
+  if (!subject) return <Navigate to="/subjects" replace />;
 
   const start = (mode: LearningMode) => {
     const t = topic.trim() || "Свободная тема";
@@ -28,33 +23,44 @@ export function ModeSelect() {
 
   return (
     <div>
-      <h1 className="mb-1 flex items-center gap-2 text-2xl font-bold tracking-tight">
-        <span>{subject.icon}</span> {subject.title}
-      </h1>
-      <p className="mb-4 text-gray-500">Введи тему и выбери режим.</p>
+      <div className="mb-5 flex items-center gap-3">
+        <div
+          className={`grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br text-2xl ${SUBJECT_COLOR[subject.id]}`}
+        >
+          {subject.icon}
+        </div>
+        <h1 className="font-display text-2xl font-extrabold tracking-tight">
+          {subject.title}
+        </h1>
+      </div>
 
+      <label className="mb-2 block text-sm font-semibold text-ink-soft">
+        Тема занятия
+      </label>
       <input
         value={topic}
         onChange={(e) => setTopic(e.target.value)}
-        placeholder="Тема (напр. «Дроби» или «Имя существительное»)"
-        className="mb-6 w-full rounded-xl border border-black/10 bg-white px-4 py-3 outline-none focus:border-blue-400"
+        placeholder="Напр. «Дроби» или «Имя существительное»"
+        className="mb-6 w-full rounded-2xl border border-hairline bg-surface px-4 py-3.5 font-medium shadow-soft outline-none transition focus:border-violet"
       />
 
       <div className="grid gap-3">
         {(Object.keys(LEARNING_MODES) as LearningMode[]).map((mode) => {
           const meta = LEARNING_MODES[mode];
           return (
-            <Card
+            <button
               key={mode}
               onClick={() => start(mode)}
-              className="flex items-center gap-3"
+              className="press flex items-center gap-4 rounded-[var(--radius-card)] bg-surface p-4 text-left shadow-soft hover:shadow-glow"
             >
-              <span className="text-2xl">{meta.icon}</span>
-              <div>
-                <div className="font-medium">{meta.title}</div>
-                <div className="text-sm text-gray-500">{meta.description}</div>
+              <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-bg text-2xl">
+                {meta.icon}
               </div>
-            </Card>
+              <div>
+                <div className="font-bold tracking-tight">{meta.title}</div>
+                <div className="text-sm text-ink-soft">{meta.description}</div>
+              </div>
+            </button>
           );
         })}
       </div>
