@@ -20,6 +20,9 @@ const GradeSelect = lazy(() =>
 const SubjectSelect = lazy(() =>
   import("../pages/SubjectSelect").then((m) => ({ default: m.SubjectSelect })),
 );
+const TopicSelect = lazy(() =>
+  import("../pages/TopicSelect").then((m) => ({ default: m.TopicSelect })),
+);
 const ModeSelect = lazy(() =>
   import("../pages/ModeSelect").then((m) => ({ default: m.ModeSelect })),
 );
@@ -47,7 +50,8 @@ export const router = createBrowserRouter([
           { path: "/parent", element: <Parent /> },
           { path: "/onboarding", element: <GradeSelect /> },
           { path: "/subjects", element: <SubjectSelect /> },
-          { path: "/subject/:subjectId", element: <ModeSelect /> },
+          { path: "/subject/:subjectId", element: <TopicSelect /> },
+          { path: "/subject/:subjectId/mode", element: <ModeSelect /> },
           { path: "/chat", element: <Chat /> },
         ],
       },
