@@ -6,6 +6,7 @@ import type {
   ChatResponse,
   LearningMode,
 } from "@onfive/shared";
+import { GOAL_HINTS } from "@onfive/shared";
 
 /**
  * Vercel Serverless Function: POST /api/chat
@@ -70,6 +71,13 @@ const MODE_PROMPTS: Record<LearningMode, string> = {
 - Даже здесь подталкивай к размышлению, а не выдавай всё готовым.`,
 };
 
+function goalsHint(goals?: string[]): string {
+  if (!goals || goals.length === 0) return "";
+  const hints = goals.map((id) => GOAL_HINTS[id]).filter(Boolean);
+  if (hints.length === 0) return "";
+  return `\n\nЦели ученика (учитывай при общении): ${hints.join("; ")}.`;
+}
+
 function buildSystemPrompt(ctx: ChatContext): string {
   const base = `Ты — дружелюбный репетитор для ученика ${ctx.grade} класса российской школы.
 Предмет: «${subjectTitle(ctx.subject)}». Тема: «${ctx.topic}».
@@ -85,7 +93,7 @@ function buildSystemPrompt(ctx: ChatContext): string {
 - Формулы: $...$ строчные, $$...$$ блочные (LaTeX).
 - «Не понимаю» → объясни ИНАЧЕ, другим способом.
 - Только по предмету.`;
-  return `${base}\n\n${MODE_PROMPTS[ctx.mode]}`;
+  return `${base}\n\n${MODE_PROMPTS[ctx.mode]}${goalsHint(ctx.goals)}`;
 }
 
 const IMAGE_MEDIA_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"] as const;

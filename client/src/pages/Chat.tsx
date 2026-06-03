@@ -15,6 +15,7 @@ type UiMessage = ChatMessage & { image?: string };
 export function Chat() {
   const [params] = useSearchParams();
   const grade = useUserStore((s) => s.grade);
+  const goals = useUserStore((s) => s.goals);
   const recordMessage = useUserStore((s) => s.recordMessage);
 
   const subject = params.get("subject") as SubjectId | null;
@@ -39,7 +40,7 @@ export function Chat() {
     return <Navigate to="/" replace />;
   }
 
-  const context: ChatContext = { grade, subject, topic, mode };
+  const context: ChatContext = { grade, subject, topic, mode, goals };
 
   const onPickFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
