@@ -24,6 +24,8 @@ interface DailyCounters {
 interface UserState {
   grade: Grade | null;
   theme: Theme;
+  /** Цели из онбординг-квиза (для персонализации). */
+  goals: string[];
 
   // Геймификация
   xp: number;
@@ -34,6 +36,7 @@ interface UserState {
   daily: DailyCounters;
 
   setGrade: (grade: Grade) => void;
+  setGoals: (goals: string[]) => void;
   toggleTheme: () => void;
 
   /** Отметка входа: обновляет стрик (continuous days). */
@@ -68,6 +71,7 @@ export const useUserStore = create<UserState>()(
     (set, get) => ({
       grade: null,
       theme: "dark",
+      goals: [],
       xp: 0,
       coins: 0,
       streak: 0,
@@ -76,6 +80,7 @@ export const useUserStore = create<UserState>()(
       daily: freshDaily(),
 
       setGrade: (grade) => set({ grade }),
+      setGoals: (goals) => set({ goals }),
       toggleTheme: () =>
         set((s) => ({ theme: s.theme === "dark" ? "light" : "dark" })),
 
@@ -129,6 +134,7 @@ export const useUserStore = create<UserState>()(
       reset: () =>
         set({
           grade: null,
+          goals: [],
           xp: 0,
           coins: 0,
           streak: 0,

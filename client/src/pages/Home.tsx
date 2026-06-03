@@ -22,7 +22,7 @@ export function Home() {
   const xp = useUserStore((s) => s.xp);
 
   if (grade === null) {
-    return <Welcome onStart={() => navigate("/onboarding")} />;
+    return <Welcome onStart={() => navigate("/quiz")} />;
   }
   return <Dashboard grade={grade} xp={xp} navigate={navigate} />;
 }
