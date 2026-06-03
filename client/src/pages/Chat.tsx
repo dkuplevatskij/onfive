@@ -1,10 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { Navigate, useSearchParams } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Mic, Send } from "lucide-react";
 import { XP } from "@onfive/shared";
 import type { ChatContext, ChatMessage, LearningMode, SubjectId } from "@onfive/shared";
 import { useUserStore } from "../stores/user";
 import { sendChat } from "../lib/api";
-import { Button } from "../components/ui/Button";
+import { useSpeech } from "../hooks/useSpeech";
+import { Markdown } from "../components/chat/Markdown";
 
 /** Экран чата с AI-репетитором. */
 export function Chat() {
@@ -21,6 +24,8 @@ export function Chat() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  const { supported: voiceSupported, listening, toggle: toggleVoice } = useSpeech(setInput);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -67,20 +72,23 @@ export function Chat() {
           </p>
         )}
         {messages.map((m, i) => (
-          <div
+          <motion.div
             key={i}
+            initial={{ opacity: 0, y: 10, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 26 }}
             className={m.role === "user" ? "flex justify-end" : "flex justify-start"}
           >
             <div
-              className={`max-w-[82%] whitespace-pre-wrap rounded-3xl px-4 py-3 ${
+              className={`max-w-[82%] rounded-3xl px-4 py-3 ${
                 m.role === "user"
-                  ? "aurora rounded-br-lg text-white shadow-glow"
+                  ? "aurora rounded-br-lg whitespace-pre-wrap text-white shadow-glow"
                   : "rounded-bl-lg bg-surface text-ink shadow-soft"
               }`}
             >
-              {m.content}
+              {m.role === "user" ? m.content : <Markdown content={m.content} />}
             </div>
-          </div>
+          </motion.div>
         ))}
         {loading && (
           <div className="flex items-center gap-1.5 text-ink-faint">
@@ -94,6 +102,17 @@ export function Chat() {
       </div>
 
       <div className="flex items-end gap-2 pt-3">
+        {voiceSupported && (
+          <button
+            onClick={toggleVoice}
+            aria-label="Голосовой ввод"
+            className={`press grid h-12 w-12 shrink-0 place-items-center rounded-2xl shadow-soft ${
+              listening ? "aurora text-white shadow-glow" : "bg-surface text-ink-soft"
+            }`}
+          >
+            <Mic size={20} className={listening ? "animate-pulse" : ""} />
+          </button>
+        )}
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -104,12 +123,17 @@ export function Chat() {
             }
           }}
           rows={1}
-          placeholder="Твой вопрос…"
+          placeholder={listening ? "Говори…" : "Твой вопрос…"}
           className="flex-1 resize-none rounded-2xl border border-hairline bg-surface px-4 py-3 shadow-soft outline-none transition focus:border-violet"
         />
-        <Button onClick={() => void send()} disabled={loading} className="px-4 py-3">
-          ➤
-        </Button>
+        <button
+          onClick={() => void send()}
+          disabled={loading}
+          aria-label="Отправить"
+          className="press aurora grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-white shadow-glow disabled:opacity-50"
+        >
+          <Send size={19} />
+        </button>
       </div>
     </div>
   );
