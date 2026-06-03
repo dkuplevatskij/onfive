@@ -59,6 +59,8 @@ export interface ChatContext {
   subject: SubjectId;
   topic: string;
   mode: LearningMode;
+  /** Цели ученика из онбординг-квиза (id), для персонализации тона. */
+  goals?: string[];
 }
 
 /** Тело запроса POST /api/chat. */

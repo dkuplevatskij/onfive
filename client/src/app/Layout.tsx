@@ -1,6 +1,6 @@
 import { Outlet, Link } from "react-router-dom";
 import { Sparkles, Sun, Moon, Coins } from "lucide-react";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useUserStore } from "../stores/user";
 import { useApplyTheme } from "../hooks/useTheme";
 import { Spark } from "../components/ui/Spark";
@@ -49,7 +49,15 @@ export function Layout() {
         </div>
       </header>
       <main className="flex-1">
-        <Outlet />
+        <Suspense
+          fallback={
+            <div className="grid min-h-[60vh] place-items-center">
+              <Spark size={44} className="spark-pulse" />
+            </div>
+          }
+        >
+          <Outlet />
+        </Suspense>
       </main>
     </div>
   );

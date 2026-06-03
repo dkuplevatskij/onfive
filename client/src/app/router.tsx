@@ -1,17 +1,29 @@
+import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import { Layout } from "./Layout";
 import { TabLayout } from "./TabLayout";
 import { PlainLayout } from "./PlainLayout";
 import { Home } from "../pages/Home";
-import { Tasks } from "../pages/Tasks";
-import { Leaderboard } from "../pages/Leaderboard";
-import { Profile } from "../pages/Profile";
-import { Quiz } from "../pages/Quiz";
-import { Parent } from "../pages/Parent";
-import { GradeSelect } from "../pages/GradeSelect";
-import { SubjectSelect } from "../pages/SubjectSelect";
-import { ModeSelect } from "../pages/ModeSelect";
-import { Chat } from "../pages/Chat";
+
+// Ленивая загрузка — каждый экран отдельным чанком. Главная грузится
+// сразу (первый экран), тяжёлые экраны (чат с KaTeX, квиз) — по требованию.
+const Tasks = lazy(() => import("../pages/Tasks").then((m) => ({ default: m.Tasks })));
+const Leaderboard = lazy(() =>
+  import("../pages/Leaderboard").then((m) => ({ default: m.Leaderboard })),
+);
+const Profile = lazy(() => import("../pages/Profile").then((m) => ({ default: m.Profile })));
+const Quiz = lazy(() => import("../pages/Quiz").then((m) => ({ default: m.Quiz })));
+const Parent = lazy(() => import("../pages/Parent").then((m) => ({ default: m.Parent })));
+const GradeSelect = lazy(() =>
+  import("../pages/GradeSelect").then((m) => ({ default: m.GradeSelect })),
+);
+const SubjectSelect = lazy(() =>
+  import("../pages/SubjectSelect").then((m) => ({ default: m.SubjectSelect })),
+);
+const ModeSelect = lazy(() =>
+  import("../pages/ModeSelect").then((m) => ({ default: m.ModeSelect })),
+);
+const Chat = lazy(() => import("../pages/Chat").then((m) => ({ default: m.Chat })));
 
 export const router = createBrowserRouter([
   {

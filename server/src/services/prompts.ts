@@ -1,4 +1,13 @@
 import type { ChatContext, LearningMode } from "@onfive/shared";
+import { GOAL_HINTS } from "@onfive/shared";
+
+/** Строка-подсказка по целям ученика из квиза (или пусто). */
+function goalsHint(goals?: string[]): string {
+  if (!goals || goals.length === 0) return "";
+  const hints = goals.map((id) => GOAL_HINTS[id]).filter(Boolean);
+  if (hints.length === 0) return "";
+  return `\n\nЦели ученика (учитывай при общении): ${hints.join("; ")}.`;
+}
 
 /**
  * Базовый системный промпт — вставляется всегда.
@@ -66,5 +75,5 @@ function subjectTitle(id: string): string {
 
 /** Собирает полный системный промпт для занятия. */
 export function buildSystemPrompt(ctx: ChatContext): string {
-  return `${basePrompt(ctx)}\n\n${MODE_PROMPTS[ctx.mode]}`;
+  return `${basePrompt(ctx)}\n\n${MODE_PROMPTS[ctx.mode]}${goalsHint(ctx.goals)}`;
 }
