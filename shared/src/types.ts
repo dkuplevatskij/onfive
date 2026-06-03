@@ -65,6 +65,8 @@ export interface ChatContext {
 export interface ChatRequest {
   context: ChatContext;
   messages: ChatMessage[];
+  /** Необязательное фото задания (data URL), прикрепляется к последнему сообщению ученика. */
+  image?: string;
 }
 
 /** Ответ POST /api/chat. */

@@ -20,10 +20,10 @@ export async function chatRoutes(app: FastifyInstance): Promise<void> {
       return reply.status(400).send({ error: "Неверный формат запроса" });
     }
 
-    const { context, messages } = request.body;
+    const { context, messages, image } = request.body;
 
     try {
-      const text = await generateReply(context, messages);
+      const text = await generateReply(context, messages, image);
       const result: ChatResponse = { reply: text };
       return reply.send(result);
     } catch (err) {

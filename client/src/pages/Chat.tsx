@@ -1,11 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import { Navigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Mic, Send } from "lucide-react";
+import { Mic, Send, ImagePlus, X } from "lucide-react";
 import type { ChatContext, ChatMessage, LearningMode, SubjectId } from "@onfive/shared";
-import { useUserStore } from "../stores/user";import { sendChat } from "../lib/api";
+import { useUserStore } from "../stores/user";
+import { sendChat } from "../lib/api";
 import { useSpeech } from "../hooks/useSpeech";
 import { Markdown } from "../components/chat/Markdown";
+
+/** Сообщение с опциональным прикреплённым фото (для отображения). */
+type UiMessage = ChatMessage & { image?: string };
 
 /** Экран чата с AI-репетитором. */
 export function Chat() {
@@ -17,11 +21,13 @@ export function Chat() {
   const mode = params.get("mode") as LearningMode | null;
   const topic = params.get("topic") ?? "Свободная тема";
 
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<UiMessage[]>([]);
   const [input, setInput] = useState("");
+  const [attached, setAttached] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const { supported: voiceSupported, listening, toggle: toggleVoice } = useSpeech(setInput);
 
@@ -35,18 +41,31 @@ export function Chat() {
 
   const context: ChatContext = { grade, subject, topic, mode };
 
+  const onPickFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => setAttached(reader.result as string);
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
+
   const send = async () => {
     const text = input.trim();
-    if (!text || loading) return;
+    if ((!text && !attached) || loading) return;
 
-    const next = [...messages, { role: "user", content: text } as ChatMessage];
+    const image = attached ?? undefined;
+    const content = text || "Помоги разобраться с этим заданием на фото.";
+    const next: UiMessage[] = [...messages, { role: "user", content, image }];
     setMessages(next);
     setInput("");
+    setAttached(null);
     setError(null);
     setLoading(true);
 
     try {
-      const reply = await sendChat(context, next);
+      const history: ChatMessage[] = next.map(({ role, content }) => ({ role, content }));
+      const reply = await sendChat(context, history, image);
       setMessages([...next, { role: "assistant", content: reply }]);
       recordMessage();
     } catch {
@@ -66,7 +85,7 @@ export function Chat() {
       <div className="flex-1 space-y-3 overflow-y-auto pb-4">
         {messages.length === 0 && (
           <p className="text-ink-faint">
-            Напиши, с чем нужна помощь — и начнём разбираться вместе. 👇
+            Напиши вопрос или 📷 сфотографируй задание — разберёмся вместе. 👇
           </p>
         )}
         {messages.map((m, i) => (
@@ -78,13 +97,18 @@ export function Chat() {
             className={m.role === "user" ? "flex justify-end" : "flex justify-start"}
           >
             <div
-              className={`max-w-[82%] rounded-3xl px-4 py-3 ${
+              className={`max-w-[82%] overflow-hidden rounded-3xl ${
                 m.role === "user"
-                  ? "aurora rounded-br-lg whitespace-pre-wrap text-white shadow-glow"
+                  ? "aurora rounded-br-lg text-white shadow-glow"
                   : "rounded-bl-lg bg-surface text-ink shadow-soft"
               }`}
             >
-              {m.role === "user" ? m.content : <Markdown content={m.content} />}
+              {m.image && (
+                <img src={m.image} alt="Фото задания" className="max-h-60 w-full object-cover" />
+              )}
+              <div className={`px-4 py-3 ${m.role === "user" ? "whitespace-pre-wrap" : ""}`}>
+                {m.role === "user" ? m.content : <Markdown content={m.content} />}
+              </div>
             </div>
           </motion.div>
         ))}
@@ -99,7 +123,26 @@ export function Chat() {
         <div ref={bottomRef} />
       </div>
 
-      <div className="flex items-end gap-2 pt-3">
+      {/* Превью прикреплённого фото */}
+      {attached && (
+        <div className="mb-2 flex items-center gap-3 rounded-2xl bg-surface p-2 shadow-soft">
+          <img src={attached} alt="Превью" className="h-14 w-14 rounded-xl object-cover" />
+          <span className="flex-1 text-sm text-ink-soft">Фото задания прикреплено</span>
+          <button onClick={() => setAttached(null)} aria-label="Убрать фото" className="press grid h-8 w-8 place-items-center rounded-full bg-bg text-ink-soft">
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
+      <div className="flex items-end gap-2 pt-1">
+        <input ref={fileRef} type="file" accept="image/*" capture="environment" onChange={onPickFile} className="hidden" />
+        <button
+          onClick={() => fileRef.current?.click()}
+          aria-label="Прикрепить фото"
+          className="press grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-surface text-ink-soft shadow-soft"
+        >
+          <ImagePlus size={20} />
+        </button>
         {voiceSupported && (
           <button
             onClick={toggleVoice}

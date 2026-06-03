@@ -4,11 +4,12 @@ import type { ChatContext, ChatMessage, ChatResponse } from "@onfive/shared";
 export async function sendChat(
   context: ChatContext,
   messages: ChatMessage[],
+  image?: string,
 ): Promise<string> {
   const res = await fetch("/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ context, messages }),
+    body: JSON.stringify({ context, messages, image }),
   });
 
   if (!res.ok) {
