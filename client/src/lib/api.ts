@@ -13,7 +13,12 @@ export async function sendChat(
   });
 
   if (!res.ok) {
-    throw new Error(`Ошибка сервера: ${res.status}`);
+    // Пытаемся вытащить понятное сообщение об ошибке с сервера.
+    const detail = await res
+      .json()
+      .then((d: { error?: string }) => d?.error)
+      .catch(() => undefined);
+    throw new Error(detail ?? `Ошибка сервера: ${res.status}`);
   }
 
   const data = (await res.json()) as ChatResponse;

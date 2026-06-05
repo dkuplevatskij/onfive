@@ -1,12 +1,4 @@
 import Anthropic from "@anthropic-ai/sdk";
-import type {
-  ChatContext,
-  ChatMessage,
-  ChatRequest,
-  ChatResponse,
-  LearningMode,
-} from "@onfive/shared";
-import { GOAL_HINTS } from "@onfive/shared";
 
 /**
  * Vercel Serverless Function: POST /api/chat
@@ -15,7 +7,42 @@ import { GOAL_HINTS } from "@onfive/shared";
  * системного промпта повторяет server/src/services/prompts.ts —
  * держим их синхронными. Так фронтенд и API живут на одном домене
  * Vercel без отдельного бэкенда и без CORS.
+ *
+ * Типы и GOAL_HINTS инлайнятся локально (дублируют @onfive/shared),
+ * чтобы функция не зависела от воркспейс-пакета при сборке на Vercel.
  */
+
+type LearningMode = "explain" | "homework" | "quiz" | "exam" | "free";
+
+interface ChatContext {
+  grade: number;
+  subject: string;
+  topic: string;
+  mode: LearningMode;
+  goals?: string[];
+}
+interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+interface ChatRequest {
+  context: ChatContext;
+  messages: ChatMessage[];
+  image?: string;
+}
+interface ChatResponse {
+  reply: string;
+}
+
+/** Подсказки для промпта по целям ученика из квиза (синхронно с @onfive/shared). */
+const GOAL_HINTS: Record<string, string> = {
+  time: "ученик хочет освободить время — объясняй ёмко, без лишней воды",
+  logic:
+    "ученику важно развить логику и самостоятельность — дольше держи его в режиме самостоятельного поиска ответа",
+  marks: "ученик хочет подтянуть оценки — обращай внимание на типичные ошибки и аккуратность",
+  exams:
+    "ученик готовится к контрольным и ОГЭ/ЕГЭ — связывай тему с форматом экзаменационных заданий",
+};
 
 const CHAT_MODEL = process.env.CLAUDE_MODEL_CHAT ?? "claude-sonnet-4-6";
 
@@ -186,12 +213,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   }
 
   const { context, messages, image } = body;
+
+  // Явная диагностика отсутствующего ключа — самая частая причина в проде.
+  if (!process.env.ANTHROPIC_API_KEY) {
+    res.status(503).json({
+      error:
+        "ANTHROPIC_API_KEY не задан в окружении Vercel. Добавь переменную в Project Settings → Environment Variables и сделай redeploy.",
+    });
+    return;
+  }
+
   try {
     const text = await generateReply(context, messages, image);
     const result: ChatResponse = { reply: text };
     res.status(200).json(result);
   } catch (err) {
     console.error(err);
-    res.status(502).json({ error: "Ошибка обращения к Claude API" });
+    const detail = err instanceof Error ? err.message : "неизвестная ошибка";
+    res.status(502).json({ error: `Ошибка обращения к Claude API: ${detail}` });
   }
 }
