@@ -18,7 +18,7 @@ export function GradeSelect() {
   return (
     <div>
       <h1 className="font-display text-3xl font-extrabold tracking-tight">
-        В каком ты <span className="aurora-text">классе?</span>
+        В каком ты <span className="text-violet">классе?</span>
       </h1>
       <p className="mb-7 mt-2 text-ink-soft">Подберём предметы по программе ФГОС.</p>
 
@@ -44,7 +44,7 @@ export function GradeSelect() {
             >
               <span
                 className={`font-display text-4xl font-extrabold ${
-                  active ? "text-white" : "aurora-text"
+                  active ? "text-white" : "text-violet"
                 }`}
               >
                 {g}

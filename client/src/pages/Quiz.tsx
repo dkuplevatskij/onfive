@@ -116,7 +116,7 @@ export function Quiz() {
           <motion.div key="grade" variants={fade} initial="hidden" animate="show" exit="exit">
             <p className="text-sm font-bold uppercase tracking-wide text-ink-faint">Шаг 1 из 4</p>
             <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight">
-              В каком ты <span className="aurora-text">классе?</span>
+              В каком ты <span className="text-violet">классе?</span>
             </h1>
             <p className="mb-6 mt-2 text-ink-soft">Подберём программу по ФГОС.</p>
             <div className="grid grid-cols-3 gap-3">
@@ -131,7 +131,7 @@ export function Quiz() {
                     g === grade ? "aurora text-white shadow-glow" : "bg-surface shadow-soft"
                   }`}
                 >
-                  <span className={`font-display text-4xl font-extrabold ${g === grade ? "text-white" : "aurora-text"}`}>
+                  <span className={`font-display text-4xl font-extrabold ${g === grade ? "text-white" : "text-violet"}`}>
                     {g}
                   </span>
                   <span className={`text-xs font-semibold ${g === grade ? "text-white/70" : "text-ink-faint"}`}>
@@ -269,7 +269,7 @@ function PlanScreen({ grade, onFinish }: { grade: Grade | null; onFinish: () => 
         <Sparkles size={14} /> План готов
       </div>
       <h1 className="font-display text-3xl font-extrabold leading-tight tracking-tight">
-        Прогноз: рост <span className="aurora-text">+35%</span> за 3 месяца
+        Прогноз: рост <span className="text-violet">+35%</span> за 3 месяца
       </h1>
       <p className="mt-2 text-ink-soft">
         {grade ? `${grade} класс · ` : ""}Персональный план готов. Начинаем!

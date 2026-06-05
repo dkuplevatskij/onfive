@@ -18,7 +18,7 @@ export function Leaderboard() {
   return (
     <div>
       <h1 className="font-display text-3xl font-extrabold tracking-tight">
-        <span className="aurora-text">Рейтинг</span>
+        <span className="text-violet">Рейтинг</span>
       </h1>
 
       <div className="mb-5 mt-4 flex gap-2 rounded-2xl bg-surface p-1 shadow-soft">

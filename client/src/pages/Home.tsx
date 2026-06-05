@@ -38,7 +38,7 @@ function Welcome({ onStart }: { onStart: () => void }) {
       variants={stagger}
       initial="hidden"
       animate="show"
-      className="flex min-h-[78vh] flex-col"
+      className="flex min-h-[78dvh] flex-col"
     >
       <motion.div
         variants={rise}
@@ -50,7 +50,7 @@ function Welcome({ onStart }: { onStart: () => void }) {
         <h1 className="text-center font-display text-4xl font-extrabold leading-tight">
           Учись
           <br />
-          <span className="aurora-text">на пятёрку</span>
+          <span className="text-violet">на пятёрку</span>
         </h1>
         <p className="mx-auto mt-4 max-w-xs text-center text-white/70">
           AI-репетитор, который не сливает ответы, а высекает искру понимания —
@@ -65,7 +65,7 @@ function Welcome({ onStart }: { onStart: () => void }) {
             variants={rise}
             className="flex items-center gap-4 rounded-2xl bg-surface p-4 shadow-soft"
           >
-            <div className="aurora grid h-11 w-11 shrink-0 place-items-center rounded-xl text-white">
+            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-violet text-white">
               <f.Icon size={20} />
             </div>
             <div>

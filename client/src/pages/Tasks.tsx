@@ -33,7 +33,7 @@ export function Tasks() {
   return (
     <motion.div variants={stagger} initial="hidden" animate="show">
       <motion.h1 variants={rise} className="font-display text-3xl font-extrabold tracking-tight">
-        Награды <span className="aurora-text">ждут</span>
+        Награды <span className="text-violet">ждут</span>
       </motion.h1>
       <motion.p variants={rise} className="mb-6 mt-2 text-ink-soft">
         Выполняй миссии — получай XP и монеты.

@@ -51,7 +51,7 @@ export function Layout() {
       <main className="flex-1">
         <Suspense
           fallback={
-            <div className="grid min-h-[60vh] place-items-center">
+            <div className="grid min-h-[60dvh] place-items-center">
               <Spark size={44} className="spark-pulse" />
             </div>
           }

@@ -6,17 +6,22 @@ interface CardProps {
   className?: string;
 }
 
-/** Базовая карточка OnFive: крупный радиус, мягкая тень, spring-нажатие. */
+/** Базовая карточка OnFive: крупный радиус, мягкая тень, spring-нажатие.
+ *  Кликабельная карточка рендерится как <button> — доступна с клавиатуры. */
 export function Card({ children, onClick, className = "" }: CardProps) {
-  const interactive = onClick
-    ? "press cursor-pointer hover:shadow-glow"
-    : "";
-  return (
-    <div
-      onClick={onClick}
-      className={`rounded-[var(--radius-card)] bg-surface p-5 shadow-soft ${interactive} ${className}`}
-    >
-      {children}
-    </div>
-  );
+  const base = `rounded-[var(--radius-card)] bg-surface p-5 shadow-soft ${className}`;
+
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        className={`press w-full cursor-pointer text-left hover:shadow-glow ${base}`}
+      >
+        {children}
+      </button>
+    );
+  }
+
+  return <div className={base}>{children}</div>;
 }

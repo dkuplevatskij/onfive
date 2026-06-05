@@ -17,7 +17,7 @@ export function TabBar() {
           key={to}
           to={to}
           end={end}
-          className="press flex flex-1 flex-col items-center gap-0.5 rounded-xl py-1.5"
+          className="press flex min-h-[44px] flex-1 flex-col items-center justify-center gap-0.5 rounded-xl py-1.5"
         >
           {({ isActive }) => (
             <>
@@ -28,7 +28,7 @@ export function TabBar() {
               />
               <span
                 className={`text-[11px] font-semibold ${
-                  isActive ? "aurora-text" : "text-ink-faint"
+                  isActive ? "text-ink" : "text-ink-faint"
                 }`}
               >
                 {label}
