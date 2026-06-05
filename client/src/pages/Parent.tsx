@@ -139,7 +139,7 @@ function Analytics({ onExit }: { onExit: () => void }) {
     <div>
       <div className="mb-5 flex items-center justify-between">
         <h1 className="font-display text-3xl font-extrabold tracking-tight">
-          Панель <span className="aurora-text">родителя</span>
+          Панель <span className="text-violet">родителя</span>
         </h1>
         <button onClick={onExit} className="press text-sm font-bold text-ink-soft">
           Выйти

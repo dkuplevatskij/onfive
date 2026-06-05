@@ -79,7 +79,7 @@ export function Chat() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-9rem)] flex-col">
+    <div className="flex h-[calc(100dvh-9rem)] flex-col">
       <div className="mb-3 inline-flex w-fit items-center gap-1.5 rounded-full bg-surface px-3 py-1.5 text-sm shadow-soft">
         <span className="text-ink-faint">Тема:</span>
         <span className="font-semibold text-ink">{topic}</span>

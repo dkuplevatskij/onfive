@@ -23,7 +23,7 @@ export function SubjectSelect() {
   return (
     <div>
       <h1 className="font-display text-3xl font-extrabold tracking-tight">
-        Выбери <span className="aurora-text">предмет</span>
+        Выбери <span className="text-violet">предмет</span>
       </h1>
       <p className="mb-7 mt-2 text-ink-soft">{grade} класс</p>
 
