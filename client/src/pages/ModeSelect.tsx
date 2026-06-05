@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams, useSearchParams, Link } from "react-router-dom";
 import { motion, type Variants } from "framer-motion";
 import { LEARNING_MODES } from "@onfive/shared";
 import type { LearningMode } from "@onfive/shared";
@@ -14,24 +13,24 @@ const rise: Variants = {
   show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 280, damping: 24 } },
 };
 
-/** Экран выбора темы и режима обучения. */
+/** Экран выбора режима обучения по выбранной теме. */
 export function ModeSelect() {
   const navigate = useNavigate();
   const { subjectId = "" } = useParams();
+  const [params] = useSearchParams();
   const subject = findSubject(subjectId);
-  const [topic, setTopic] = useState("");
+  const topic = params.get("topic")?.trim() || "Свободная тема";
 
   if (!subject) return <Navigate to="/subjects" replace />;
   const SubjIcon = SUBJECT_ICON[subject.id];
 
   const start = (mode: LearningMode) => {
-    const t = topic.trim() || "Свободная тема";
-    navigate(`/chat?subject=${subject.id}&mode=${mode}&topic=${encodeURIComponent(t)}`);
+    navigate(`/chat?subject=${subject.id}&mode=${mode}&topic=${encodeURIComponent(topic)}`);
   };
 
   return (
     <motion.div variants={stagger} initial="hidden" animate="show">
-      <motion.div variants={rise} className="mb-5 flex items-center gap-3">
+      <motion.div variants={rise} className="mb-4 flex items-center gap-3">
         <div
           className={`grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br text-white ${SUBJECT_COLOR[subject.id]}`}
         >
@@ -40,16 +39,29 @@ export function ModeSelect() {
         <h1 className="font-display text-2xl font-extrabold tracking-tight">{subject.title}</h1>
       </motion.div>
 
-      <motion.label variants={rise} className="mb-2 block text-sm font-semibold text-ink-soft">
-        Тема занятия
-      </motion.label>
-      <motion.input
+      {/* Выбранная тема + смена */}
+      <motion.div
         variants={rise}
-        value={topic}
-        onChange={(e) => setTopic(e.target.value)}
-        placeholder="Напр. «Дроби» или «Имя существительное»"
-        className="mb-6 w-full rounded-2xl border border-hairline bg-surface px-4 py-3.5 font-medium shadow-soft outline-none transition focus:border-violet"
-      />
+        className="mb-6 flex items-center justify-between gap-3 rounded-2xl bg-surface px-4 py-3 shadow-soft"
+      >
+        <div className="min-w-0">
+          <div className="text-xs font-semibold uppercase tracking-wide text-ink-faint">Тема</div>
+          <div className="truncate font-bold tracking-tight">{topic}</div>
+        </div>
+        <Link
+          to={`/subject/${subject.id}`}
+          className="press shrink-0 rounded-full bg-chip px-3 py-1.5 text-sm font-semibold text-[var(--color-on-chip)]"
+        >
+          Сменить
+        </Link>
+      </motion.div>
+
+      <motion.h2
+        variants={rise}
+        className="mb-2 px-1 text-sm font-bold uppercase tracking-wide text-ink-faint"
+      >
+        Как будем заниматься?
+      </motion.h2>
 
       <div className="grid gap-3">
         {(Object.keys(LEARNING_MODES) as LearningMode[]).map((mode) => {
