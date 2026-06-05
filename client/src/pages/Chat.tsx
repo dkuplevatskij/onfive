@@ -71,8 +71,12 @@ export function Chat() {
       const reply = await sendChat(context, history, image);
       setMessages([...next, { role: "assistant", content: reply }]);
       recordMessage();
-    } catch {
-      setError("Не удалось получить ответ. Проверь, что сервер запущен.");
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Не удалось получить ответ. Проверь, что сервер запущен.",
+      );
     } finally {
       setLoading(false);
     }
