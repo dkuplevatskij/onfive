@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { Navigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Mic, Send, ImagePlus, X } from "lucide-react";
+import { Mic, Send, ImagePlus, X, Volume2, Square } from "lucide-react";
 import type { ChatContext, ChatMessage, LearningMode, SubjectId } from "@onfive/shared";
 import { useUserStore } from "../stores/user";
 import { sendChat } from "../lib/api";
 import { useSpeech } from "../hooks/useSpeech";
+import { useSpeak } from "../hooks/useSpeak";
 import { Markdown } from "../components/chat/Markdown";
 
 /** Сообщение с опциональным прикреплённым фото (для отображения). */
@@ -31,6 +32,7 @@ export function Chat() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const { supported: voiceSupported, listening, toggle: toggleVoice } = useSpeech(setInput);
+  const { supported: ttsSupported, speakingId, toggle: toggleSpeak } = useSpeak();
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -109,6 +111,16 @@ export function Chat() {
               )}
               <div className={`px-4 py-3 ${m.role === "user" ? "whitespace-pre-wrap" : ""}`}>
                 {m.role === "user" ? m.content : <Markdown content={m.content} />}
+                {m.role === "assistant" && ttsSupported && (
+                  <button
+                    onClick={() => toggleSpeak(i, m.content)}
+                    aria-label={speakingId === i ? "Остановить озвучку" : "Озвучить ответ"}
+                    className="press mt-2 inline-flex items-center gap-1.5 rounded-full bg-bg px-2.5 py-1 text-xs font-semibold text-ink-soft"
+                  >
+                    {speakingId === i ? <Square size={12} /> : <Volume2 size={13} />}
+                    {speakingId === i ? "Стоп" : "Озвучить"}
+                  </button>
+                )}
               </div>
             </div>
           </motion.div>
