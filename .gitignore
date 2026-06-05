@@ -36,3 +36,4 @@ coverage/
 # Python (skill scripts)
 __pycache__/
 *.py[cod]
+.superpowers/
