@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { motion, type Variants } from "framer-motion";
-import type { ReportLength, ReportMode } from "@onfive/shared";
+import type { ReportLength, ReportMode, SubjectId } from "@onfive/shared";
 import { useUserStore } from "../stores/user";
 import { useReportsStore } from "../stores/reports";
 import { subjectsForGrade } from "../data/subjects";
@@ -21,7 +21,7 @@ export function ReportNew() {
   const recordReport = useUserStore((s) => s.recordReport);
   const createReport = useReportsStore((s) => s.create);
 
-  const [subject, setSubject] = useState<string | null>(null);
+  const [subject, setSubject] = useState<SubjectId | null>(null);
   const [topic, setTopic] = useState("");
   const [length, setLength] = useState<ReportLength>("medium");
 
@@ -31,7 +31,7 @@ export function ReportNew() {
   const finish = (mode: ReportMode) => {
     if (!subject || !topic.trim()) return;
     const id = createReport({
-      subject: subject as never,
+      subject,
       topic: topic.trim(),
       length,
       mode,

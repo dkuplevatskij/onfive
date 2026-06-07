@@ -64,7 +64,11 @@ export function ReportsList() {
                   </div>
                 </button>
                 <button
-                  onClick={() => remove(r.id)}
+                  onClick={() => {
+                    if (confirm(`Удалить доклад «${r.topic}»? Это действие необратимо.`)) {
+                      remove(r.id);
+                    }
+                  }}
                   aria-label="Удалить доклад"
                   className="press grid h-9 w-9 shrink-0 place-items-center rounded-full bg-bg text-ink-faint"
                 >

@@ -26,6 +26,7 @@ function download(blob: Blob, name: string) {
 export function ReportWorkspace() {
   const { id = "" } = useParams();
   const grade = useUserStore((s) => s.grade);
+  const recordMessage = useUserStore((s) => s.recordMessage);
   const report = useReportsStore((s) => s.get(id));
   const update = useReportsStore((s) => s.update);
   const appendToDraft = useReportsStore((s) => s.appendToDraft);
@@ -65,6 +66,7 @@ export function ReportWorkspace() {
       };
       const reply = await sendChat(context, nextMessages);
       update(id, { messages: [...nextMessages, { role: "assistant", content: reply }] });
+      recordMessage();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Не удалось получить ответ.");
     } finally {
