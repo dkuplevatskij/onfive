@@ -9,8 +9,6 @@ import { sendChat } from "../lib/api";
 import { Markdown } from "../components/chat/Markdown";
 import { findSubject } from "../data/subjects";
 import { findReportMode } from "../data/reportModes";
-import { buildDocxBlob } from "../lib/export/docx";
-import { buildPdfBlob, loadFontBase64 } from "../lib/export/pdf";
 import { safeFileName } from "../lib/export/filename";
 
 type Tab = "chat" | "text";
@@ -74,11 +72,15 @@ export function ReportWorkspace() {
     }
   };
 
+  // docx/jspdf тяжёлые — грузим их динамически только при экспорте,
+  // чтобы не раздувать основной чанк рабочего пространства.
   const exportDocx = async () => {
+    const { buildDocxBlob } = await import("../lib/export/docx");
     const blob = await buildDocxBlob(report.topic, report.draft);
     download(blob, `${safeFileName(report.topic)}-onfive.docx`);
   };
   const exportPdf = async () => {
+    const { buildPdfBlob, loadFontBase64 } = await import("../lib/export/pdf");
     const font = await loadFontBase64();
     const blob = await buildPdfBlob(report.topic, report.draft, font);
     download(blob, `${safeFileName(report.topic)}-onfive.pdf`);
