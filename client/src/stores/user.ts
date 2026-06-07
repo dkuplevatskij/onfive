@@ -55,6 +55,8 @@ interface UserState {
   recordMessage: () => void;
   recordCorrect: () => void;
   recordLesson: () => void;
+  /** Зафиксировать создание доклада (+15 XP). */
+  recordReport: () => void;
 
   reset: () => void;
 }
@@ -146,6 +148,9 @@ export const useUserStore = create<UserState>()(
             daily: { ...d, lessons: d.lessons + 1 },
           };
         }),
+
+      recordReport: () =>
+        set((s) => ({ xp: s.xp + 15 })),
 
       reset: () =>
         set({
