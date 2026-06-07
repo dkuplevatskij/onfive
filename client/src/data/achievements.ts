@@ -1,12 +1,12 @@
 import type { LucideIcon } from "lucide-react";
-import { Footprints, Flame, Award, Coins, Crown, Target } from "lucide-react";
+import { Footprints, Flame, Award, Coins, Crown, Target, PenLine, BookMarked } from "lucide-react";
 
 export interface AchievementDef {
   id: string;
   title: string;
   description: string;
   Icon: LucideIcon;
-  unlocked: (s: { xp: number; coins: number; streak: number }) => boolean;
+  unlocked: (s: { xp: number; coins: number; streak: number; reports: number }) => boolean;
 }
 
 export const ACHIEVEMENTS: AchievementDef[] = [
@@ -51,5 +51,19 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     description: "Набери 2000 XP",
     Icon: Crown,
     unlocked: (s) => s.xp >= 2000,
+  },
+  {
+    id: "author",
+    title: "Автор",
+    description: "Создай первый доклад",
+    Icon: PenLine,
+    unlocked: (s) => s.reports >= 1,
+  },
+  {
+    id: "speaker",
+    title: "Докладчик",
+    description: "Создай 10 докладов",
+    Icon: BookMarked,
+    unlocked: (s) => s.reports >= 10,
   },
 ];

@@ -4,6 +4,7 @@ import { Flame, Sparkles, Coins, GraduationCap, Lock, ShieldCheck, ChevronRight 
 import { useUserStore } from "../stores/user";
 import { levelFromXp } from "../lib/level";
 import { ACHIEVEMENTS } from "../data/achievements";
+import { useReportsStore } from "../stores/reports";
 
 const stagger: Variants = { hidden: {}, show: { transition: { staggerChildren: 0.05 } } };
 const rise: Variants = {
@@ -14,11 +15,12 @@ const rise: Variants = {
 export function Profile() {
   const navigate = useNavigate();
   const { grade, xp, coins, streak } = useUserStore();
+  const reportsCount = useReportsStore((s) => s.reports.length);
 
   if (grade === null) return <Navigate to="/" replace />;
 
   const level = levelFromXp(xp);
-  const stats = { xp, coins, streak };
+  const stats = { xp, coins, streak, reports: reportsCount };
 
   const tiles = [
     { Icon: Sparkles, label: "Опыт", value: `${xp} XP`, color: "text-violet" },
