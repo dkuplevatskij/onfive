@@ -21,6 +21,16 @@ interface DailyCounters {
   lessons: number;
 }
 
+/** Редактируемые поля профиля ученика. */
+export interface ProfileFields {
+  nickname: string;
+  firstName: string;
+  lastName: string;
+  telegram: string;
+  vk: string;
+  avatar: string;
+}
+
 interface UserState {
   grade: Grade | null;
   theme: Theme;
@@ -30,6 +40,19 @@ interface UserState {
   familyCode: string;
   /** PIN родительской панели (4 цифры) или null. */
   parentPin: string | null;
+
+  /** Ник для рейтинга (пустое → показываем «Ученик»). */
+  nickname: string;
+  /** Имя (по желанию). */
+  firstName: string;
+  /** Фамилия. */
+  lastName: string;
+  /** Telegram (@username или ссылка). */
+  telegram: string;
+  /** VK (id или ссылка). */
+  vk: string;
+  /** Эмодзи-аватар для рейтинга и профиля. */
+  avatar: string;
 
   // Геймификация
   xp: number;
@@ -42,6 +65,8 @@ interface UserState {
   setGrade: (grade: Grade) => void;
   setGoals: (goals: string[]) => void;
   setParentPin: (pin: string) => void;
+  /** Частичное обновление полей профиля (ник, имя, фамилия, контакты, аватар). */
+  setProfile: (patch: Partial<ProfileFields>) => void;
   toggleTheme: () => void;
 
   /** Отметка входа: обновляет стрик (continuous days). */
@@ -89,6 +114,12 @@ export const useUserStore = create<UserState>()(
       goals: [],
       familyCode: makeFamilyCode(),
       parentPin: null,
+      nickname: "",
+      firstName: "",
+      lastName: "",
+      telegram: "",
+      vk: "",
+      avatar: "",
       xp: 0,
       coins: 0,
       streak: 0,
@@ -99,6 +130,15 @@ export const useUserStore = create<UserState>()(
       setGrade: (grade) => set({ grade }),
       setGoals: (goals) => set({ goals }),
       setParentPin: (pin) => set({ parentPin: pin }),
+      setProfile: (patch) =>
+        set((s) => ({
+          nickname: (patch.nickname ?? s.nickname).slice(0, 24),
+          firstName: (patch.firstName ?? s.firstName).slice(0, 40),
+          lastName: (patch.lastName ?? s.lastName).slice(0, 40),
+          telegram: (patch.telegram ?? s.telegram).slice(0, 64),
+          vk: (patch.vk ?? s.vk).slice(0, 128),
+          avatar: patch.avatar ?? s.avatar,
+        })),
       toggleTheme: () =>
         set((s) => ({ theme: s.theme === "dark" ? "light" : "dark" })),
 

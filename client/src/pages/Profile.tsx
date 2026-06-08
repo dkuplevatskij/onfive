@@ -1,6 +1,6 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import { motion, type Variants } from "framer-motion";
-import { Flame, Sparkles, Coins, GraduationCap, Lock, ShieldCheck, ChevronRight } from "lucide-react";
+import { Flame, Sparkles, Coins, GraduationCap, Lock, ShieldCheck, ChevronRight, Pencil, Send, AtSign } from "lucide-react";
 import { useUserStore } from "../stores/user";
 import { levelFromXp } from "../lib/level";
 import { ACHIEVEMENTS } from "../data/achievements";
@@ -14,13 +14,15 @@ const rise: Variants = {
 
 export function Profile() {
   const navigate = useNavigate();
-  const { grade, xp, coins, streak } = useUserStore();
+  const { grade, xp, coins, streak, nickname, firstName, lastName, telegram, vk, avatar } =
+    useUserStore();
   const reportsCount = useReportsStore((s) => s.reports.length);
 
   if (grade === null) return <Navigate to="/" replace />;
 
   const level = levelFromXp(xp);
   const stats = { xp, coins, streak, reports: reportsCount };
+  const fullName = [firstName, lastName].filter(Boolean).join(" ");
 
   const tiles = [
     { Icon: Sparkles, label: "Опыт", value: `${xp} XP`, color: "text-violet" },
@@ -51,6 +53,40 @@ export function Profile() {
           <div className="aurora h-full rounded-full" style={{ width: `${Math.max(Math.round(level.progress * 100), 4)}%` }} />
         </div>
       </motion.div>
+
+      {/* Идентичность профиля */}
+      <motion.button
+        variants={rise}
+        onClick={() => navigate("/profile/edit")}
+        className="press mt-4 flex w-full items-center gap-4 rounded-[var(--radius-card)] bg-surface p-4 text-left shadow-soft hover:shadow-glow"
+      >
+        <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-chip text-3xl">
+          {avatar || "🙂"}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="truncate font-bold tracking-tight">
+            {nickname || "Добавь ник"}
+          </div>
+          <div className="truncate text-sm text-ink-soft">
+            {fullName || "Имя и фамилия не указаны"}
+          </div>
+          {(telegram || vk) && (
+            <div className="mt-1 flex items-center gap-3 text-xs text-ink-faint">
+              {telegram && (
+                <span className="flex items-center gap-1">
+                  <Send size={12} /> {telegram}
+                </span>
+              )}
+              {vk && (
+                <span className="flex items-center gap-1">
+                  <AtSign size={12} /> VK
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+        <Pencil size={18} className="shrink-0 text-ink-faint" />
+      </motion.button>
 
       {/* Статистика */}
       <div className="mt-4 grid grid-cols-2 gap-3">

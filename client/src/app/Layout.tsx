@@ -3,12 +3,14 @@ import { Sparkles, Sun, Moon, Coins } from "lucide-react";
 import { Suspense, useEffect } from "react";
 import { useUserStore } from "../stores/user";
 import { useApplyTheme } from "../hooks/useTheme";
+import { useCloudSync } from "../lib/sync/sync";
 import { Spark } from "../components/ui/Spark";
 import { CountUp } from "../components/ui/CountUp";
 
 /** Каркас приложения: липкая стеклянная шапка с брендом, темой, монетами и XP. */
 export function Layout() {
   useApplyTheme();
+  useCloudSync();
   const xp = useUserStore((s) => s.xp);
   const coins = useUserStore((s) => s.coins);
   const theme = useUserStore((s) => s.theme);
