@@ -42,3 +42,28 @@
 - `migrations/0001_init.sql` — таблицы `profiles`, `reports`, политики RLS и
   функция рейтинга. Миграции идемпотентны (`if not exists` / `or replace`) —
   повторный прогон безопасен.
+
+## Переезд на Yandex Cloud (план)
+
+Сейчас OnFive работает на managed-хостинге **supabase.com** — это минимум участия
+на этапе MVP. Когда появятся реальные ученики с настоящими персональными данными
+(ФИО, Telegram, VK), данные граждан РФ нужно хранить на серверах в России
+(**152-ФЗ**). Тогда переезжаем на **self-hosted Supabase в Yandex Cloud**.
+
+Supabase — open-source, поэтому переезд не трогает код приложения:
+
+1. Развернуть self-hosted Supabase в Yandex Cloud одним из способов:
+   - **Yandex Compute Cloud** (VM) + официальный
+     [docker-compose Supabase](https://supabase.com/docs/guides/self-hosting/docker);
+   - либо **Managed Service for PostgreSQL** (Яндекс управляет самой БД и
+     бэкапами) как хранилище под Supabase-стек.
+2. Применить ту же миграцию `migrations/0001_init.sql` — таблицы, RLS и функция
+   рейтинга переносятся без изменений.
+3. Включить Anonymous Sign-Ins в self-hosted GoTrue.
+4. **Поменять только переменные окружения** на новые `VITE_SUPABASE_URL` /
+   `VITE_SUPABASE_ANON_KEY` своего инстанса и передеплоить клиент.
+
+Благодаря «мягкой» архитектуре (`client/src/lib/supabase.ts`) смена провайдера —
+это смена двух переменных, а не правка кода. Логика синхронизации и слияния
+(`client/src/lib/sync/`) от хостинга не зависит.
+
