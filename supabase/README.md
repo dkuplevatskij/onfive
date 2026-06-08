@@ -43,20 +43,26 @@
   функция рейтинга. Миграции идемпотентны (`if not exists` / `or replace`) —
   повторный прогон безопасен.
 
-## Переезд на Yandex Cloud (план)
+## Переезд на Timeweb Cloud (план)
 
 Сейчас OnFive работает на managed-хостинге **supabase.com** — это минимум участия
 на этапе MVP. Когда появятся реальные ученики с настоящими персональными данными
 (ФИО, Telegram, VK), данные граждан РФ нужно хранить на серверах в России
-(**152-ФЗ**). Тогда переезжаем на **self-hosted Supabase в Yandex Cloud**.
+(**152-ФЗ**). Тогда переезжаем на **self-hosted Supabase в Timeweb Cloud**.
+
+> Managed-Supabase «в один клик» в РФ нет ни у Timeweb, ни у Yandex Cloud —
+> везде это self-hosting Supabase (Docker на VM) + опционально managed-PostgreSQL
+> провайдера как хранилище. Выбран Timeweb: дешевле и проще для инди-этапа.
 
 Supabase — open-source, поэтому переезд не трогает код приложения:
 
-1. Развернуть self-hosted Supabase в Yandex Cloud одним из способов:
-   - **Yandex Compute Cloud** (VM) + официальный
+1. Развернуть self-hosted Supabase в Timeweb Cloud:
+   - создать **Облачный сервер** (Docker — например, через образ Portainer из
+     Маркетплейса) и поднять официальный
      [docker-compose Supabase](https://supabase.com/docs/guides/self-hosting/docker);
-   - либо **Managed Service for PostgreSQL** (Яндекс управляет самой БД и
-     бэкапами) как хранилище под Supabase-стек.
+     см. гайд Timeweb «[Как развернуть Supabase](https://timeweb.cloud/tutorials/cloud/kak-razvernut-supabase-v-oblake-timeweb-cloud)»;
+   - опционально вынести БД в **Базы данных (managed PostgreSQL)** Timeweb, чтобы
+     бэкапы и обновления Postgres были на стороне провайдера, а файлы — в их S3.
 2. Применить ту же миграцию `migrations/0001_init.sql` — таблицы, RLS и функция
    рейтинга переносятся без изменений.
 3. Включить Anonymous Sign-Ins в self-hosted GoTrue.
@@ -65,5 +71,6 @@ Supabase — open-source, поэтому переезд не трогает ко
 
 Благодаря «мягкой» архитектуре (`client/src/lib/supabase.ts`) смена провайдера —
 это смена двух переменных, а не правка кода. Логика синхронизации и слияния
-(`client/src/lib/sync/`) от хостинга не зависит.
+(`client/src/lib/sync/`) от хостинга не зависит — те же шаги подходят и для
+Yandex Cloud, если позже понадобится больше масштаба.
 
