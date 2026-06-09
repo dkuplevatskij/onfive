@@ -1,8 +1,9 @@
 import { NavLink } from "react-router-dom";
-import { House, ListChecks, Trophy, User } from "lucide-react";
+import { House, MessageCircle, ListChecks, Trophy, User } from "lucide-react";
 
 const TABS = [
   { to: "/", label: "Главная", Icon: House, end: true },
+  { to: "/chat?general=1&mode=free", label: "Чат", Icon: MessageCircle, end: false },
   { to: "/tasks", label: "Задания", Icon: ListChecks, end: false },
   { to: "/leaderboard", label: "Рейтинг", Icon: Trophy, end: false },
   { to: "/profile", label: "Профиль", Icon: User, end: false },

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion, type Variants } from "framer-motion";
-import { Brain, Target, Flame, BookOpen, ListChecks, Trophy, ChevronRight, Gift, PenLine, MessageCircle } from "lucide-react";
+import { Brain, Target, Flame, BookOpen, ListChecks, Trophy, ChevronRight, Gift, PenLine } from "lucide-react";
 import { useUserStore } from "../stores/user";
 import { levelFromXp } from "../lib/level";
 import { Button } from "../components/ui/Button";
@@ -150,24 +150,6 @@ function Dashboard({
           </div>
         </div>
         <ChevronRight size={24} />
-      </motion.button>
-
-      {/* Свободный чат — без выбора предмета, сразу к AI */}
-      <motion.button
-        variants={rise}
-        onClick={() => navigate("/chat?general=1&mode=free")}
-        className="press mt-3 flex w-full items-center justify-between rounded-[var(--radius-card)] bg-surface p-5 text-left shadow-soft hover:shadow-glow"
-      >
-        <div className="flex items-center gap-4">
-          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-chip text-[var(--color-on-chip)]">
-            <MessageCircle size={22} />
-          </div>
-          <div>
-            <div className="font-bold tracking-tight">Свободный чат с AI</div>
-            <div className="text-sm text-ink-soft">Любой вопрос — без выбора предмета</div>
-          </div>
-        </div>
-        <ChevronRight className="text-ink-faint" />
       </motion.button>
 
       <div className="mt-3 grid grid-cols-2 gap-3">

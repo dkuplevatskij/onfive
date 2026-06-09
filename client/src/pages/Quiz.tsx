@@ -308,17 +308,6 @@ function PlanScreen({ grade, onFinish }: { grade: Grade | null; onFinish: () => 
         </div>
       </div>
 
-      {/* Отзыв */}
-      <div className="mt-3 flex items-start gap-3 rounded-2xl bg-surface p-4 shadow-soft">
-        <div className="aurora grid h-10 w-10 shrink-0 place-items-center rounded-full font-display font-extrabold text-white">
-          А
-        </div>
-        <div>
-          <p className="text-sm font-medium">«Сын сам сел за уроки и поднял оценки за месяц 🔥»</p>
-          <p className="mt-1 text-xs text-ink-faint">Айгуль М. · родитель</p>
-        </div>
-      </div>
-
       <div className="mt-auto pt-6">
         <Button onClick={onFinish} size="lg" className="flex w-full items-center justify-center gap-2">
           <TrendingUp size={18} /> Начать учиться
