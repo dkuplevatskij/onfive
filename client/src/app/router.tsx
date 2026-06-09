@@ -12,6 +12,9 @@ const Leaderboard = lazy(() =>
   import("../pages/Leaderboard").then((m) => ({ default: m.Leaderboard })),
 );
 const Profile = lazy(() => import("../pages/Profile").then((m) => ({ default: m.Profile })));
+const ProfileEdit = lazy(() =>
+  import("../pages/ProfileEdit").then((m) => ({ default: m.ProfileEdit })),
+);
 const Quiz = lazy(() => import("../pages/Quiz").then((m) => ({ default: m.Quiz })));
 const Parent = lazy(() => import("../pages/Parent").then((m) => ({ default: m.Parent })));
 const GradeSelect = lazy(() =>
@@ -27,6 +30,13 @@ const ModeSelect = lazy(() =>
   import("../pages/ModeSelect").then((m) => ({ default: m.ModeSelect })),
 );
 const Chat = lazy(() => import("../pages/Chat").then((m) => ({ default: m.Chat })));
+const ReportsList = lazy(() =>
+  import("../pages/ReportsList").then((m) => ({ default: m.ReportsList })),
+);
+const ReportNew = lazy(() => import("../pages/ReportNew").then((m) => ({ default: m.ReportNew })));
+const ReportWorkspace = lazy(() =>
+  import("../pages/ReportWorkspace").then((m) => ({ default: m.ReportWorkspace })),
+);
 
 export const router = createBrowserRouter([
   {
@@ -47,12 +57,16 @@ export const router = createBrowserRouter([
         element: <PlainLayout />,
         children: [
           { path: "/quiz", element: <Quiz /> },
+          { path: "/profile/edit", element: <ProfileEdit /> },
           { path: "/parent", element: <Parent /> },
           { path: "/onboarding", element: <GradeSelect /> },
           { path: "/subjects", element: <SubjectSelect /> },
           { path: "/subject/:subjectId", element: <TopicSelect /> },
           { path: "/subject/:subjectId/mode", element: <ModeSelect /> },
           { path: "/chat", element: <Chat /> },
+          { path: "/reports", element: <ReportsList /> },
+          { path: "/reports/new", element: <ReportNew /> },
+          { path: "/reports/:id", element: <ReportWorkspace /> },
         ],
       },
     ],

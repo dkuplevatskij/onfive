@@ -45,6 +45,12 @@ export type LearningMode =
   | "exam"
   | "free";
 
+/** Режим работы над докладом. */
+export type ReportMode = "write" | "draft" | "review";
+
+/** Объём доклада: краткий ~500, средний ~1000, подробный ~2000 слов. */
+export type ReportLength = "short" | "medium" | "long";
+
 /** Роль автора сообщения в чате. */
 export type ChatRole = "user" | "assistant";
 
@@ -61,6 +67,10 @@ export interface ChatContext {
   mode: LearningMode;
   /** Цели ученика из онбординг-квиза (id), для персонализации тона. */
   goals?: string[];
+  /** Если задан — это сессия доклада, а не обычного занятия. */
+  reportMode?: ReportMode;
+  /** Желаемый объём доклада (для режима черновика). */
+  reportLength?: ReportLength;
 }
 
 /** Тело запроса POST /api/chat. */

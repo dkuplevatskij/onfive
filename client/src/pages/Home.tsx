@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { motion, type Variants } from "framer-motion";
-import { Brain, Target, Flame, BookOpen, ListChecks, Trophy, ChevronRight, Gift } from "lucide-react";
+import { Brain, Target, Flame, BookOpen, ListChecks, Trophy, ChevronRight, Gift, PenLine } from "lucide-react";
 import { useUserStore } from "../stores/user";
 import { levelFromXp } from "../lib/level";
 import { Button } from "../components/ui/Button";
@@ -170,6 +170,23 @@ function Dashboard({
           <Trophy className="text-amber" />
           <span className="font-bold tracking-tight">Рейтинг</span>
           <span className="text-sm text-ink-soft">Топ учеников</span>
+        </motion.button>
+
+        <motion.button
+          variants={rise}
+          onClick={() => navigate("/reports")}
+          className="press col-span-2 flex items-center justify-between rounded-[var(--radius-card)] bg-surface p-5 text-left shadow-soft hover:shadow-glow"
+        >
+          <div className="flex items-center gap-4">
+            <div className="aurora grid h-12 w-12 place-items-center rounded-2xl text-white shadow-glow">
+              <PenLine size={22} />
+            </div>
+            <div>
+              <div className="font-bold tracking-tight">📝 Доклады</div>
+              <div className="text-sm text-ink-soft">AI поможет написать доклад</div>
+            </div>
+          </div>
+          <ChevronRight className="text-ink-faint" />
         </motion.button>
       </div>
 

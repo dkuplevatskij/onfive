@@ -20,6 +20,8 @@ interface ChatContext {
   topic: string;
   mode: LearningMode;
   goals?: string[];
+  reportMode?: "write" | "draft" | "review";
+  reportLength?: "short" | "medium" | "long";
 }
 interface ChatMessage {
   role: "user" | "assistant";
@@ -98,6 +100,37 @@ const MODE_PROMPTS: Record<LearningMode, string> = {
 - Даже здесь подталкивай к размышлению, а не выдавай всё готовым.`,
 };
 
+const REPORT_LENGTH_HINT: Record<"short" | "medium" | "long", string> = {
+  short: "краткий, около 500 слов",
+  medium: "средний, около 1000 слов",
+  long: "подробный, около 2000 слов",
+};
+
+const REPORT_PROMPTS: Record<"write" | "draft" | "review", string> = {
+  write: `Режим: ПОМОЩЬ С ДОКЛАДОМ.
+- Сначала уточни тему и желаемый объём.
+- Предложи план доклада: введение, 3-5 пунктов основной части, заключение.
+- По каждому пункту задавай ученику вопросы: «Что ты знаешь о...?», «Как думаешь, почему...?».
+- На основе ответов ученика помогай сформулировать связный абзац.
+- НЕ пиши весь доклад сам. Ученик участвует в создании каждой части.`,
+  draft: `Режим: ГЕНЕРАЦИЯ ЧЕРНОВИКА ДОКЛАДА.
+- Создай структурированный доклад по теме.
+- Структура: Введение → Основная часть (3-5 разделов) → Заключение → Список источников.
+- Язык грамотный, но на уровне класса ученика, не академический.
+- Используй факты и понятные примеры.
+- В конце предложи ученику прочитать и задать вопросы, если что-то непонятно.`,
+  review: `Режим: ПРОВЕРКА ДОКЛАДА.
+- Ученик вставляет свой текст доклада.
+- Дай конструктивную обратную связь: структура, аргументация, грамотность, оформление.
+- Отмечай и сильные стороны, и что улучшить.
+- НЕ переписывай доклад за ученика — подсказывай, как улучшить самому.`,
+};
+
+function reportLengthHint(ctx: ChatContext): string {
+  if (ctx.reportMode !== "draft" || !ctx.reportLength) return "";
+  return `\n- Объём: ${REPORT_LENGTH_HINT[ctx.reportLength]}.`;
+}
+
 function goalsHint(goals?: string[]): string {
   if (!goals || goals.length === 0) return "";
   const hints = goals.map((id) => GOAL_HINTS[id]).filter(Boolean);
@@ -120,6 +153,9 @@ function buildSystemPrompt(ctx: ChatContext): string {
 - Формулы: $...$ строчные, $$...$$ блочные (LaTeX).
 - «Не понимаю» → объясни ИНАЧЕ, другим способом.
 - Только по предмету.`;
+  if (ctx.reportMode) {
+    return `${base}\n\n${REPORT_PROMPTS[ctx.reportMode]}${reportLengthHint(ctx)}${goalsHint(ctx.goals)}`;
+  }
   return `${base}\n\n${MODE_PROMPTS[ctx.mode]}${goalsHint(ctx.goals)}`;
 }
 
