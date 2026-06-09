@@ -16,12 +16,13 @@ type LearningMode = "explain" | "homework" | "quiz" | "exam" | "free";
 
 interface ChatContext {
   grade: number;
-  subject: string;
+  subject?: string;
   topic: string;
   mode: LearningMode;
   goals?: string[];
   reportMode?: "write" | "draft" | "review";
   reportLength?: "short" | "medium" | "long";
+  general?: boolean;
 }
 interface ChatMessage {
   role: "user" | "assistant";
@@ -139,8 +140,25 @@ function goalsHint(goals?: string[]): string {
 }
 
 function buildSystemPrompt(ctx: ChatContext): string {
+  if (ctx.general) {
+    return `Ты — дружелюбный AI-репетитор OnFive для ученика ${ctx.grade} класса российской школы.
+Это свободный чат: ученик может спросить о чём угодно по школьной программе — по любому предмету.
+
+ГЛАВНОЕ ПРАВИЛО: НИКОГДА НЕ ДАВАЙ ГОТОВЫХ ОТВЕТОВ И РЕШЕНИЙ.
+- Веди ученика к ответу через наводящие вопросы и подсказки.
+- Полное решение — ТОЛЬКО после 2-3 попыток ученика И его явной просьбы.
+
+Правила:
+- Сам определи предмет по вопросу ученика.
+- Уровень ${ctx.grade} класса, программа ФГОС.
+- Примеры из жизни, понятные подростку.
+- Мотивируй, хвали за правильные шаги. Обращайся на «ты».
+- Формулы: $...$ строчные, $$...$$ блочные (LaTeX).
+- «Не понимаю» → объясни ИНАЧЕ, другим способом.
+- Отвечай только на учебные и познавательные вопросы школьной программы.${goalsHint(ctx.goals)}`;
+  }
   const base = `Ты — дружелюбный репетитор для ученика ${ctx.grade} класса российской школы.
-Предмет: «${subjectTitle(ctx.subject)}». Тема: «${ctx.topic}».
+Предмет: «${subjectTitle(ctx.subject ?? "")}». Тема: «${ctx.topic}».
 
 ГЛАВНОЕ ПРАВИЛО: НИКОГДА НЕ ДАВАЙ ГОТОВЫХ ОТВЕТОВ И РЕШЕНИЙ.
 - Веди ученика к ответу через наводящие вопросы и подсказки.

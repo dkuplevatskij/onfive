@@ -134,24 +134,25 @@ function Dashboard({
         </div>
       </motion.div>
 
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <motion.button
-          variants={rise}
-          onClick={() => navigate("/subjects")}
-          className="press col-span-2 flex items-center justify-between rounded-[var(--radius-card)] bg-surface p-5 text-left shadow-soft hover:shadow-glow"
-        >
-          <div className="flex items-center gap-4">
-            <div className="aurora grid h-12 w-12 place-items-center rounded-2xl text-white shadow-glow">
-              <BookOpen size={22} />
-            </div>
-            <div>
-              <div className="font-bold tracking-tight">Начать занятие</div>
-              <div className="text-sm text-ink-soft">{grade} класс · выбери предмет</div>
-            </div>
+      {/* Главная CTA — ярко выделена, чтобы быть первым действием */}
+      <motion.button
+        variants={rise}
+        onClick={() => navigate("/subjects")}
+        className="aurora press mt-4 flex w-full items-center justify-between rounded-[var(--radius-card)] p-6 text-left text-white shadow-glow"
+      >
+        <div className="flex items-center gap-4">
+          <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-white/20 backdrop-blur">
+            <BookOpen size={26} />
           </div>
-          <ChevronRight className="text-ink-faint" />
-        </motion.button>
+          <div>
+            <div className="font-display text-xl font-extrabold tracking-tight">Начать занятие</div>
+            <div className="text-sm text-white/80">{grade} класс · выбери предмет и тему</div>
+          </div>
+        </div>
+        <ChevronRight size={24} />
+      </motion.button>
 
+      <div className="mt-3 grid grid-cols-2 gap-3">
         <motion.button
           variants={rise}
           onClick={() => navigate("/tasks")}

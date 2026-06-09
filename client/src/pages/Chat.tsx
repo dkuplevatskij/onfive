@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import { Navigate, useSearchParams } from "react-router-dom";
+import { Navigate, useSearchParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Mic, Send, ImagePlus, X, Volume2, Square } from "lucide-react";
+import { Mic, Send, ImagePlus, X, Volume2, Square, ChevronLeft } from "lucide-react";
 import type { ChatContext, ChatMessage, LearningMode, SubjectId } from "@onfive/shared";
 import { useUserStore } from "../stores/user";
 import { sendChat } from "../lib/api";
@@ -15,13 +15,15 @@ type UiMessage = ChatMessage & { image?: string };
 /** Экран чата с AI-репетитором. */
 export function Chat() {
   const [params] = useSearchParams();
+  const navigate = useNavigate();
   const grade = useUserStore((s) => s.grade);
   const goals = useUserStore((s) => s.goals);
   const recordMessage = useUserStore((s) => s.recordMessage);
 
+  const general = params.get("general") === "1";
   const subject = params.get("subject") as SubjectId | null;
   const mode = params.get("mode") as LearningMode | null;
-  const topic = params.get("topic") ?? "Свободная тема";
+  const topic = general ? "Свободный чат" : params.get("topic") ?? "Свободная тема";
 
   const [messages, setMessages] = useState<UiMessage[]>([]);
   const [input, setInput] = useState("");
@@ -38,11 +40,13 @@ export function Chat() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  if (grade === null || !subject || !mode) {
+  if (grade === null || (!general && (!subject || !mode))) {
     return <Navigate to="/" replace />;
   }
 
-  const context: ChatContext = { grade, subject, topic, mode, goals };
+  const context: ChatContext = general
+    ? { grade, topic, mode: "free", goals, general: true }
+    : { grade, subject: subject!, topic, mode: mode!, goals };
 
   const onPickFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -84,9 +88,18 @@ export function Chat() {
 
   return (
     <div className="flex h-[calc(100dvh-9rem)] flex-col">
-      <div className="mb-3 inline-flex w-fit items-center gap-1.5 rounded-full bg-surface px-3 py-1.5 text-sm shadow-soft">
-        <span className="text-ink-faint">Тема:</span>
-        <span className="font-semibold text-ink">{topic}</span>
+      <div className="mb-3 flex items-center gap-2">
+        <button
+          onClick={() => navigate(-1)}
+          aria-label="Назад"
+          className="press grid h-9 w-9 shrink-0 place-items-center rounded-full bg-surface text-ink-soft shadow-soft"
+        >
+          <ChevronLeft size={18} />
+        </button>
+        <div className="inline-flex w-fit items-center gap-1.5 rounded-full bg-surface px-3 py-1.5 text-sm shadow-soft">
+          <span className="text-ink-faint">Тема:</span>
+          <span className="font-semibold text-ink">{topic}</span>
+        </div>
       </div>
 
       <div className="flex-1 space-y-3 overflow-y-auto pb-4">

@@ -30,3 +30,14 @@ describe("buildSystemPrompt — доклады", () => {
     expect(p).toContain("СВОБОДНЫЙ ВОПРОС");
   });
 });
+
+describe("buildSystemPrompt — свободный чат (general)", () => {
+  it("даёт общий промпт без привязки к предмету и хранит сократическое правило", () => {
+    const p = buildSystemPrompt({ grade: 8, topic: "Свободный чат", mode: "free", general: true });
+    expect(p).toContain("свободный чат");
+    expect(p).toContain("Сам определи предмет");
+    expect(p).toMatch(/НИКОГДА НЕ ДАВАЙ ГОТОВЫХ ОТВЕТОВ/);
+    // Не подставляет название предмета, даже если оно случайно пришло.
+    expect(p).not.toContain("Предмет: «");
+  });
+});
