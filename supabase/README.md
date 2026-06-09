@@ -19,7 +19,10 @@
 ## Настройка
 
 1. Создай проект на [supabase.com](https://supabase.com).
-2. **SQL Editor** → выполни `supabase/migrations/0001_init.sql`.
+2. **SQL Editor** → выполни `supabase/migrations/0001_init.sql`, затем
+   `supabase/migrations/0002_avatars_storage.sql` (бакет `avatars` + политики
+   для загрузки фото-аватаров). Без 0002 пресет-аватары работают, а загрузка
+   фото будет недоступна.
 3. **Authentication → Providers → Anonymous Sign-Ins** → включи.
 4. **Project Settings → API** → скопируй `Project URL` и `anon public` ключ.
 5. Задай переменные окружения клиента (локально — `client/.env`, на Vercel —

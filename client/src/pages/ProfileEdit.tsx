@@ -1,14 +1,13 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ChevronLeft, Check, Send, AtSign } from "lucide-react";
+import { ChevronLeft, Check, Send, AtSign, ImagePlus, Loader2 } from "lucide-react";
 import { useUserStore } from "../stores/user";
-
-/** Набор эмодзи-аватаров на выбор. */
-const AVATARS = [
-  "🦊", "🐱", "🐼", "🦉", "🐧", "🐢", "🦄", "🐲",
-  "🚀", "🎓", "⭐️", "🔥", "🧠", "🎯", "🎮", "🏆",
-];
+import { useAuthStore } from "../stores/auth";
+import { Avatar } from "../components/ui/Avatar";
+import { AVATAR_PRESETS } from "../data/avatars";
+import { uploadAvatar } from "../lib/avatar";
+import { isSupabaseConfigured } from "../lib/supabase";
 
 const fieldClass =
   "w-full rounded-2xl bg-bg px-4 py-3 text-ink outline-none ring-1 ring-transparent transition focus:ring-violet placeholder:text-ink-faint";
@@ -19,6 +18,12 @@ export function ProfileEdit() {
   const navigate = useNavigate();
   const grade = useUserStore((s) => s.grade);
   const setProfile = useUserStore((s) => s.setProfile);
+  const userId = useAuthStore((s) => s.userId);
+
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const canUpload = isSupabaseConfigured && !!userId;
 
   // Начальные значения формы читаем один раз из стора (lazy initializer):
   // селектор не должен возвращать новый объект на каждый рендер — иначе
@@ -44,6 +49,22 @@ export function ProfileEdit() {
     navigate("/profile");
   };
 
+  const onPickPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || !userId) return;
+    setUploading(true);
+    setUploadError(null);
+    try {
+      const url = await uploadAvatar(userId, file);
+      update({ avatar: url });
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : "Не удалось загрузить фото.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
       <button
@@ -60,16 +81,46 @@ export function ProfileEdit() {
 
       {/* Выбор аватара */}
       <h2 className={`${labelClass} mt-6`}>Аватар</h2>
-      <div className="grid grid-cols-8 gap-2">
-        {AVATARS.map((a) => (
+
+      <div className="flex items-center gap-4">
+        <Avatar value={form.avatar} name={form.nickname} size={72} className="rounded-3xl shadow-soft" />
+        <div className="flex-1">
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            onChange={onPickPhoto}
+            className="hidden"
+          />
           <button
-            key={a}
-            onClick={() => update({ avatar: a })}
-            className={`press grid aspect-square place-items-center rounded-2xl text-2xl shadow-soft transition ${
-              form.avatar === a ? "aurora ring-2 ring-violet" : "bg-surface"
+            onClick={() => fileRef.current?.click()}
+            disabled={!canUpload || uploading}
+            className="press inline-flex items-center gap-2 rounded-2xl bg-surface px-4 py-2.5 text-sm font-bold text-ink shadow-soft disabled:opacity-50"
+          >
+            {uploading ? <Loader2 size={16} className="animate-spin" /> : <ImagePlus size={16} />}
+            {uploading ? "Загружаем…" : "Загрузить фото"}
+          </button>
+          <p className="mt-1.5 text-xs text-ink-faint">
+            {canUpload
+              ? "Или выбери готовый аватар ниже"
+              : "Загрузка фото — после подключения облака. Пока выбери аватар ниже."}
+          </p>
+        </div>
+      </div>
+      {uploadError && <p className="mt-2 text-sm text-coral">{uploadError}</p>}
+
+      <div className="mt-4 grid grid-cols-6 gap-2.5">
+        {AVATAR_PRESETS.map((p) => (
+          <button
+            key={p.id}
+            onClick={() => update({ avatar: p.id })}
+            aria-label={`Аватар ${p.id}`}
+            style={{ backgroundImage: p.gradient }}
+            className={`press grid aspect-square place-items-center rounded-2xl shadow-soft transition ${
+              form.avatar === p.id ? "ring-2 ring-violet ring-offset-2 ring-offset-bg" : ""
             }`}
           >
-            {a}
+            {form.avatar === p.id && <Check size={18} className="text-white" />}
           </button>
         ))}
       </div>

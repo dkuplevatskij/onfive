@@ -6,6 +6,7 @@ import { useAuthStore } from "../stores/auth";
 import { levelFromXp } from "../lib/level";
 import { isSupabaseConfigured } from "../lib/supabase";
 import { fetchLeaderboard, type LeaderboardEntry } from "../lib/cloud";
+import { Avatar } from "../components/ui/Avatar";
 
 /**
  * Рейтинг. Когда облако подключено и анонимная сессия готова — показываем
@@ -65,9 +66,7 @@ export function Leaderboard() {
         animate={{ opacity: 1, y: 0 }}
         className="aurora flex items-center gap-4 rounded-[var(--radius-card)] p-5 text-white shadow-glow"
       >
-        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/15 text-2xl backdrop-blur">
-          {avatar || <Trophy size={22} />}
-        </div>
+        <Avatar value={avatar} name={nickname} size={48} className="rounded-2xl" />
         <div className="flex-1">
           <div className="font-bold tracking-tight">{nickname || "Это ты"}</div>
           <div className="text-sm text-white/80">{level.title}</div>
@@ -102,9 +101,7 @@ export function Leaderboard() {
                 <div className="w-6 text-center font-display font-extrabold tabular-nums text-ink-faint">
                   {i + 1}
                 </div>
-                <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-bg text-lg">
-                  {e.avatar || "🙂"}
-                </div>
+                <Avatar value={e.avatar} name={e.nickname} size={36} className="rounded-xl" />
                 <div className="flex-1 truncate">
                   <div className="truncate font-bold tracking-tight">
                     {e.nickname || "Ученик"} {isMe && <span className="text-violet">· ты</span>}
