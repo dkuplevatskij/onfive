@@ -18,17 +18,22 @@ const labelClass = "mb-1.5 block text-sm font-bold text-ink-soft";
 export function ProfileEdit() {
   const navigate = useNavigate();
   const grade = useUserStore((s) => s.grade);
-  const profile = useUserStore((s) => ({
-    nickname: s.nickname,
-    firstName: s.firstName,
-    lastName: s.lastName,
-    telegram: s.telegram,
-    vk: s.vk,
-    avatar: s.avatar,
-  }));
   const setProfile = useUserStore((s) => s.setProfile);
 
-  const [form, setForm] = useState(profile);
+  // Начальные значения формы читаем один раз из стора (lazy initializer):
+  // селектор не должен возвращать новый объект на каждый рендер — иначе
+  // zustand v5 (useSyncExternalStore) уходит в бесконечный цикл ре-рендера.
+  const [form, setForm] = useState(() => {
+    const s = useUserStore.getState();
+    return {
+      nickname: s.nickname,
+      firstName: s.firstName,
+      lastName: s.lastName,
+      telegram: s.telegram,
+      vk: s.vk,
+      avatar: s.avatar,
+    };
+  });
 
   if (grade === null) return <Navigate to="/" replace />;
 
