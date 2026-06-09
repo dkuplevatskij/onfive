@@ -62,7 +62,8 @@ export interface ChatMessage {
 /** Контекст занятия, передаётся на бэкенд при каждом запросе в чат. */
 export interface ChatContext {
   grade: Grade;
-  subject: SubjectId;
+  /** Предмет занятия. Необязателен в свободном чате (general). */
+  subject?: SubjectId;
   topic: string;
   mode: LearningMode;
   /** Цели ученика из онбординг-квиза (id), для персонализации тона. */
@@ -71,6 +72,8 @@ export interface ChatContext {
   reportMode?: ReportMode;
   /** Желаемый объём доклада (для режима черновика). */
   reportLength?: ReportLength;
+  /** Свободный чат без привязки к предмету: AI сам определяет предмет по вопросу. */
+  general?: boolean;
 }
 
 /** Тело запроса POST /api/chat. */

@@ -19,9 +19,10 @@ export function Chat() {
   const goals = useUserStore((s) => s.goals);
   const recordMessage = useUserStore((s) => s.recordMessage);
 
+  const general = params.get("general") === "1";
   const subject = params.get("subject") as SubjectId | null;
   const mode = params.get("mode") as LearningMode | null;
-  const topic = params.get("topic") ?? "Свободная тема";
+  const topic = general ? "Свободный чат" : params.get("topic") ?? "Свободная тема";
 
   const [messages, setMessages] = useState<UiMessage[]>([]);
   const [input, setInput] = useState("");
@@ -38,11 +39,13 @@ export function Chat() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  if (grade === null || !subject || !mode) {
+  if (grade === null || (!general && (!subject || !mode))) {
     return <Navigate to="/" replace />;
   }
 
-  const context: ChatContext = { grade, subject, topic, mode, goals };
+  const context: ChatContext = general
+    ? { grade, topic, mode: "free", goals, general: true }
+    : { grade, subject: subject!, topic, mode: mode!, goals };
 
   const onPickFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
