@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { synthesizeSpeech } from "../lib/tts";
 
 /** Превращает Markdown/LaTeX в чистый текст для озвучки. */
 function toPlainText(md: string): string {
@@ -15,37 +16,37 @@ function toPlainText(md: string): string {
 }
 
 /**
- * Озвучка ответов AI через SpeechSynthesis API (ru-RU).
- * Отслеживает, какое сообщение сейчас читается, чтобы кнопка работала
- * как переключатель (старт/стоп).
+ * Озвучка ответов AI. Сначала пробуем качественный голос ElevenLabs через
+ * /api/tts; если он не настроен или недоступен — откатываемся на системный
+ * SpeechSynthesis (ru-RU). Кнопка работает как переключатель старт/стоп,
+ * `loadingId` подсвечивает загрузку аудио.
  */
 export function useSpeak() {
-  const supported =
-    typeof window !== "undefined" && "speechSynthesis" in window;
+  const webSupported = typeof window !== "undefined" && "speechSynthesis" in window;
+  // В браузере озвучка доступна всегда: либо ElevenLabs, либо системный голос.
+  const supported = typeof window !== "undefined";
+
   const [speakingId, setSpeakingId] = useState<number | null>(null);
+  const [loadingId, setLoadingId] = useState<number | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  // Защита от гонок: каждый новый запрос инвалидирует предыдущий.
+  const reqRef = useRef(0);
 
-  // Останавливаем озвучку при размонтировании.
-  useEffect(() => {
-    return () => {
-      if (supported) window.speechSynthesis.cancel();
-    };
-  }, [supported]);
+  const stopAll = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = "";
+      audioRef.current = null;
+    }
+    if (webSupported) window.speechSynthesis.cancel();
+  }, [webSupported]);
 
-  const cancel = useCallback(() => {
-    if (!supported) return;
-    window.speechSynthesis.cancel();
-    setSpeakingId(null);
-  }, [supported]);
+  useEffect(() => () => stopAll(), [stopAll]);
 
-  const toggle = useCallback(
+  const speakWithSystem = useCallback(
     (id: number, text: string) => {
-      if (!supported) return;
-      if (speakingId === id) {
-        cancel();
-        return;
-      }
-      window.speechSynthesis.cancel();
-      const utter = new SpeechSynthesisUtterance(toPlainText(text));
+      if (!webSupported) return;
+      const utter = new SpeechSynthesisUtterance(text);
       utter.lang = "ru-RU";
       utter.rate = 1;
       utter.onend = () => setSpeakingId((cur) => (cur === id ? null : cur));
@@ -53,8 +54,52 @@ export function useSpeak() {
       setSpeakingId(id);
       window.speechSynthesis.speak(utter);
     },
-    [supported, speakingId, cancel],
+    [webSupported],
   );
 
-  return { supported, speakingId, toggle, cancel };
+  const toggle = useCallback(
+    async (id: number, raw: string) => {
+      if (!supported) return;
+
+      // Повторный тап по активному/загружающемуся сообщению — стоп.
+      if (speakingId === id || loadingId === id) {
+        stopAll();
+        setSpeakingId(null);
+        setLoadingId(null);
+        return;
+      }
+
+      stopAll();
+      setSpeakingId(null);
+      const text = toPlainText(raw);
+      const myReq = ++reqRef.current;
+      setLoadingId(id);
+
+      const url = await synthesizeSpeech(text);
+      if (myReq !== reqRef.current) return; // запрос устарел — игнорируем
+
+      setLoadingId((cur) => (cur === id ? null : cur));
+
+      if (url) {
+        const audio = new Audio(url);
+        audioRef.current = audio;
+        audio.onended = () => setSpeakingId((cur) => (cur === id ? null : cur));
+        audio.onerror = () => setSpeakingId((cur) => (cur === id ? null : cur));
+        setSpeakingId(id);
+        audio.play().catch(() => setSpeakingId((cur) => (cur === id ? null : cur)));
+      } else {
+        // Серверная озвучка недоступна — системный голос.
+        speakWithSystem(id, text);
+      }
+    },
+    [supported, speakingId, loadingId, stopAll, speakWithSystem],
+  );
+
+  const cancel = useCallback(() => {
+    stopAll();
+    setSpeakingId(null);
+    setLoadingId(null);
+  }, [stopAll]);
+
+  return { supported, speakingId, loadingId, toggle, cancel };
 }

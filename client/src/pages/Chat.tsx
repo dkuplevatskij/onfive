@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Navigate, useSearchParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Mic, Send, ImagePlus, X, Volume2, Square, ChevronLeft } from "lucide-react";
+import { Mic, Send, ImagePlus, X, Volume2, Square, ChevronLeft, Loader2 } from "lucide-react";
 import type { ChatContext, ChatMessage, LearningMode, SubjectId } from "@onfive/shared";
 import { useUserStore } from "../stores/user";
 import { sendChat } from "../lib/api";
@@ -34,7 +34,7 @@ export function Chat() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const { supported: voiceSupported, listening, toggle: toggleVoice } = useSpeech(setInput);
-  const { supported: ttsSupported, speakingId, toggle: toggleSpeak } = useSpeak();
+  const { supported: ttsSupported, speakingId, loadingId, toggle: toggleSpeak } = useSpeak();
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -134,8 +134,14 @@ export function Chat() {
                     aria-label={speakingId === i ? "Остановить озвучку" : "Озвучить ответ"}
                     className="press mt-2 inline-flex items-center gap-1.5 rounded-full bg-bg px-2.5 py-1 text-xs font-semibold text-ink-soft"
                   >
-                    {speakingId === i ? <Square size={12} /> : <Volume2 size={13} />}
-                    {speakingId === i ? "Стоп" : "Озвучить"}
+                    {loadingId === i ? (
+                      <Loader2 size={12} className="animate-spin" />
+                    ) : speakingId === i ? (
+                      <Square size={12} />
+                    ) : (
+                      <Volume2 size={13} />
+                    )}
+                    {loadingId === i ? "Озвучка…" : speakingId === i ? "Стоп" : "Озвучить"}
                   </button>
                 )}
               </div>
