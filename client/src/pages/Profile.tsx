@@ -5,6 +5,7 @@ import { useUserStore } from "../stores/user";
 import { levelFromXp } from "../lib/level";
 import { ACHIEVEMENTS } from "../data/achievements";
 import { useReportsStore } from "../stores/reports";
+import { Avatar } from "../components/ui/Avatar";
 
 const stagger: Variants = { hidden: {}, show: { transition: { staggerChildren: 0.05 } } };
 const rise: Variants = {
@@ -60,9 +61,7 @@ export function Profile() {
         onClick={() => navigate("/profile/edit")}
         className="press mt-4 flex w-full items-center gap-4 rounded-[var(--radius-card)] bg-surface p-4 text-left shadow-soft hover:shadow-glow"
       >
-        <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-chip text-3xl">
-          {avatar || "🙂"}
-        </div>
+        <Avatar value={avatar} name={nickname} size={56} className="rounded-2xl" />
         <div className="min-w-0 flex-1">
           <div className="truncate font-bold tracking-tight">
             {nickname || "Добавь ник"}
