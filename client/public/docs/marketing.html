@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OnFive — Маркетинговая стратегия</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.swot-card{border-radius:var(--r-lg);padding:20px 22px;border:1px solid}
+.swot-s{background:var(--emerald-l);border-color:#A7F3D0}
+.swot-w{background:var(--rose-l);border-color:#FECDD3}
+.swot-o{background:var(--sky-l);border-color:#BAE6FD}
+.swot-t{background:var(--amber-l);border-color:#FDE68A}
+.swot-card h4{font-size:16px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.swot-card ul{margin:0;padding-left:18px}
+.swot-card li{font-size:13px;color:var(--ink3);line-height:1.55;margin-bottom:5px}
+.chan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:900px){.chan-grid{grid-template-columns:1fr}}
+.chan{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:20px;box-shadow:var(--shadow-xs)}
+.chan-ic{width:38px;height:38px;border-radius:10px;background:var(--violet-lll);color:var(--violet);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.chan-ic .ic{width:18px;height:18px}
+.chan h4{font-size:14px;margin-bottom:5px}
+.chan p{font-size:12.5px;color:var(--ink4);line-height:1.55}
+.funnel{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px}
+.fstep{background:var(--violet-lll);border:1px solid #DDD6FE;color:var(--violet);font-size:12.5px;font-weight:700;padding:8px 14px;border-radius:100px}
+.farrow{color:var(--ink5);font-weight:700}
+</style>
+</head>
+<body>
+
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
+  <symbol id="i-swords" viewBox="0 0 24 24"><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" x2="19" y1="19" y2="13"/><line x1="16" x2="20" y1="16" y2="20"/><line x1="19" x2="21" y1="21" y2="19"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-gem" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 24 24"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></symbol>
+  <symbol id="i-megaphone" viewBox="0 0 24 24"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
+  <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+</svg>
+
+<nav class="topnav"><div class="wrap topnav-inner">
+  <button class="navbtn active" onclick="go('market',this)"><svg class="ic"><use href="#i-chart"/></svg>Рынок</button>
+  <button class="navbtn" onclick="go('competitors',this)"><svg class="ic"><use href="#i-swords"/></svg>Конкуренты</button>
+  <button class="navbtn" onclick="go('swot',this)"><svg class="ic"><use href="#i-zap"/></svg>Возможности</button>
+  <button class="navbtn" onclick="go('audience',this)"><svg class="ic"><use href="#i-users"/></svg>Аудитория</button>
+  <button class="navbtn" onclick="go('pricing',this)"><svg class="ic"><use href="#i-gem"/></svg>Цены</button>
+  <button class="navbtn" onclick="go('discounts',this)"><svg class="ic"><use href="#i-tag"/></svg>Скидки</button>
+  <button class="navbtn" onclick="go('promo',this)"><svg class="ic"><use href="#i-megaphone"/></svg>Продвижение</button>
+</div></nav>
+
+<header class="hero"><div class="wrap hero-inner">
+  <div class="hero-tag"><svg class="ic"><use href="#i-zap"/></svg>Маркетинг · OnFive · Июнь 2026</div>
+  <h1>Маркетинговая стратегия<br><span>рынок, конкуренты, цены, продвижение</span></h1>
+  <p>Рынок детского онлайн-образования — крупнейший сегмент EdTech РФ и продолжает расти. Прямой конкурент один (бесплатный, но узкий «Репетитор AI» Яндекса). Ниша OnFive — личный AI-репетитор по всем предметам 5–11 на каждый день.</p>
+  <div class="hero-kpis">
+    <div class="hkpi"><div class="hkpi-v num">₽55 млрд</div><div class="hkpi-l">Детское онлайн-образование</div><div class="hkpi-d">36% рынка EdTech РФ</div></div>
+    <div class="hkpi"><div class="hkpi-v num">+50%</div><div class="hkpi-l">Рост онлайн-подготовки к экзаменам</div><div class="hkpi-d">год к году</div></div>
+    <div class="hkpi"><div class="hkpi-v num">1</div><div class="hkpi-l">Прямой конкурент (Яндекс)</div><div class="hkpi-d">бесплатный, но узкий</div></div>
+    <div class="hkpi"><div class="hkpi-v num">~30×</div><div class="hkpi-l">Дешевле живого репетитора</div><div class="hkpi-d">599 ₽ vs 157 000 ₽/год</div></div>
+  </div>
+</div></header>
+
+<!-- MARKET -->
+<div class="section" id="market"><div class="wrap">
+  <div class="sec-hdr"><div class="sec-tag"><svg class="ic"><use href="#i-chart"/></svg>Рынок</div>
+    <h2>Рынок большой и смещается в нашу сторону</h2>
+    <p>EdTech РФ — ₽154 млрд (2025, +12%). Рост замедляется, но детский сегмент и подготовка к экзаменам — главные драйверы.</p></div>
+  <div class="grid2">
+    <div class="card card-pad">
+      <div class="card-title">Сегменты EdTech РФ (2025)</div>
+      <div class="bar-chart" style="height:200px;padding-top:8px">
+        <div class="bar-col"><div class="bar-val">₽55 млрд</div><div class="bar-stack" style="height:100%"></div><div class="bar-lbl">Дети</div></div>
+        <div class="bar-col"><div class="bar-val">₽19 млрд</div><div class="bar-stack" style="height:35%"></div><div class="bar-lbl">Экзамены</div></div>
+        <div class="bar-col"><div class="bar-val">₽80 млрд</div><div class="bar-stack" style="height:100%;background:linear-gradient(180deg,#B8B8CC,#7B7B9A)"></div><div class="bar-lbl">Прочее</div></div>
+      </div>
+      <div class="note"><svg class="ic"><use href="#i-bulb"/></svg><span>Детское онлайн-образование — <strong>крупнейший сегмент (36%)</strong>; подготовка к экзаменам — самый быстрорастущий (<strong>+50%/год</strong>).</span></div>
+    </div>
+    <div class="card card-pad">
+      <div class="card-title">Ключевые цифры</div>
+      <table class="tbl">
+        <tbody>
+          <tr><td>Рынок EdTech РФ, 2025</td><td><strong>₽154 млрд</strong> (+12%)</td></tr>
+          <tr><td>Онлайн-школы для детей</td><td><strong>₽55 млрд</strong> · 36%</td></tr>
+          <tr><td>Подготовка к экзаменам</td><td><strong>₽19 млрд</strong> · +50%</td></tr>
+          <tr><td>Прогноз роста 2026</td><td>~10% (драйверы — дети, экзамены, хоумскулинг)</td></tr>
+        </tbody>
+      </table>
+      <div class="note"><svg class="ic"><use href="#i-bulb"/></svg><span>Тренды за нас: геймификация как стандарт; бум AI-помощников (но школьники идут в общие нейросети без педагогики и контроля).</span></div>
+    </div>
+  </div>
+</div></div>
+
+<!-- COMPETITORS -->
+<div class="section" id="competitors"><div class="wrap">
+  <div class="sec-hdr"><div class="sec-tag"><svg class="ic"><use href="#i-swords"/></svg>Конкуренты</div>
+    <h2>Прямой конкурент один — и тот узкий</h2>
+    <p>Яндекс закрывает только верх воронки ЕГЭ; живые репетиторы — премиум; общие нейросети и «решатели» — небезопасны и «сливают ответы».</p></div>
+  <div class="card card-pad"><div style="overflow-x:auto"><table class="tbl" style="min-width:720px">
+    <thead><tr><th>Конкурент</th><th>Что это</th><th>Цена</th><th>Слабости (наш шанс)</th></tr></thead><tbody>
+      <tr class="hl-col"><td><strong>Яндекс «Репетитор AI»</strong></td><td>ИИ на Alice, сократический</td><td><span class="pill pill-green">Бесплатно</span></td><td>Только ЕГЭ (математика/информатика); привязан к Яндекс Учебнику; нет геймификации/семьи/докладов</td></tr>
+      <tr><td><strong>Skysmart</strong></td><td>Живые репетиторы 1:1</td><td>~157 000 ₽/год</td><td>Очень дорого, расписание, нет помощи «здесь и сейчас»</td></tr>
+      <tr><td><strong>Фоксфорд</strong></td><td>Видеокурсы + вебинары</td><td>~28 000 ₽/курс</td><td>Нет живого диалога и персонализации</td></tr>
+      <tr><td><strong>Умскул</strong></td><td>Подготовка к ОГЭ/ЕГЭ</td><td>курсы, до −60%</td><td>Сезонность, нет ежедневного помощника</td></tr>
+      <tr><td><strong>Учи.ру / ЯКласс</strong></td><td>Школьные платформы</td><td>B2B2C</td><td>Институциональные, слабый родительский B2C</td></tr>
+      <tr><td><strong>ChatGPT / GigaChat</strong></td><td>Общие нейросети</td><td>free/платно</td><td>Дают готовые ответы (вредят учёбе), нет контроля родителей и безопасности</td></tr>
+      <tr><td><strong>AI-«решатели»</strong> (ai-repetitor.online и др.)</td><td>«99% правильных ответов»</td><td>разное</td><td>Анти-обучение (решают за ученика) — наш прямой контраст</td></tr>
+    </tbody></table></div>
+    <div class="note"><svg class="ic"><use href="#i-bulb"/></svg><span><strong>Закономерность:</strong> большинство новых AI-репетиторов — «решатели задач». Наше отстройное сообщение: <strong>«Мы не решаем за ребёнка — мы учим думать»</strong> (сократический метод + родительский контроль + все предметы 5–11).</span></div>
+  </div>
+</div></div>
+
+<!-- SWOT -->
+<div class="section" id="swot"><div class="wrap">
+  <div class="sec-hdr"><div class="sec-tag"><svg class="ic"><use href="#i-zap"/></svg>Возможности</div>
+    <h2>SWOT и позиционирование</h2>
+    <p>«OnFive — личный AI-репетитор по всем школьным предметам, который не решает за тебя, а доводит до ответа. Каждый день, под контролем родителей.»</p></div>
+  <div class="grid2" style="margin-bottom:16px">
+    <div class="swot-card swot-s"><h4>💪 Сильные стороны</h4><ul>
+      <li>Сократический метод — этичный AI, аргумент для родителей</li>
+      <li>Все предметы 5–11: домашка, объяснение, проверка, экзамены, доклады</li>
+      <li>Геймификация (XP, стрики, рейтинг) → привычка</li>
+      <li>Родительская панель; мультиплатформа + голосовой ввод</li>
+      <li>Гибкая себестоимость (Haiku + кэш)</li>
+    </ul></div>
+    <div class="swot-card swot-w"><h4>⚠️ Слабые стороны</h4><ul>
+      <li>Нет бренда и дистрибуции (у Яндекса — 75% школ)</li>
+      <li>Зависимость от внешних AI-API и курса рубля</li>
+      <li>Небольшой бюджет на маркетинг</li>
+    </ul></div>
+    <div class="swot-card swot-o"><h4>🚀 Возможности</h4><ul>
+      <li>Яндекс приучает рынок к «AI-репетитору» — снимает барьер недоверия</li>
+      <li>B2B2C через учителей и школы</li>
+      <li>Telegram как канал и как продукт (Mini App)</li>
+      <li>Виральность докладов с подписью OnFive</li>
+    </ul></div>
+    <div class="swot-card swot-t"><h4>🛡️ Угрозы</h4><ul>
+      <li>Яндекс/Сбер расширят бесплатный AI на все предметы</li>
+      <li>Регуляторика (152-ФЗ, данные детей)</li>
+      <li>Ценовое давление и отток</li>
+    </ul></div>
+  </div>
+</div></div>
+
+<!-- AUDIENCE -->
+<div class="section" id="audience"><div class="wrap">
+  <div class="sec-hdr"><div class="sec-tag"><svg class="ic"><use href="#i-users"/></svg>Аудитория</div>
+    <h2>Кому продаём</h2></div>
+  <div class="chan-grid">
+    <div class="chan"><div class="chan-ic"><svg class="ic"><use href="#i-users"/></svg></div><h4>Родители 5–8 классов</h4><p>Плательщик. Боль: «не могу помочь с домашкой», «дорого нанимать репетитора». Оффер: безопасный помощник + контроль + цена кофе в неделю.</p></div>
+    <div class="chan"><div class="chan-ic"><svg class="ic"><use href="#i-target"/></svg></div><h4>Ученики 9 и 11 классов</h4><p>ОГЭ/ЕГЭ. Ежедневная тренировка по всем предметам дешевле курсов.</p></div>
+    <div class="chan"><div class="chan-ic"><svg class="ic"><use href="#i-star"/></svg></div><h4>Ученики 5–11 (сам пользователь)</h4><p>Влияет на покупку. Крючок: геймификация, рейтинг, голосовой ввод, аватары.</p></div>
+    <div class="chan"><div class="chan-ic"><svg class="ic"><use href="#i-building"/></svg></div><h4>Учителя и школы (среднесрок)</h4><p>B2B2C: аналитика класса, амбассадорские промокоды. Высокий чек, длинный цикл.</p></div>
+  </div>
+</div></div>
+
+<!-- PRICING -->
+<div class="section" id="pricing"><div class="wrap">
+  <div class="sec-hdr"><div class="sec-tag"><svg class="ic"><use href="#i-gem"/></svg>Ценовая политика</div>
+    <h2>Freemium + сезонные пакеты</h2>
+    <p>Якорь — годовая подписка. Цена ниже болевого порога родителя (≈ один урок репетитора в месяц за безлимит). Детали экономики — в финмодели.</p></div>
+  <div class="pricing-grid" style="margin-bottom:20px">
+    <div class="plan"><div class="plan-header"><div class="plan-name" style="color:var(--ink4)">Free</div>
+      <div class="plan-price"><span class="price-amount">₽0</span><span class="price-period">/ мес</span></div>
+      <div class="plan-desc">Воронка и виральность. Жёсткие лимиты.</div></div>
+      <div class="plan-feats"><div class="feat"><span class="feat-check"><svg class="ic"><use href="#i-check"/></svg></span>10 сообщений/день, 1 предмет</div><div class="feat"><span class="feat-check"><svg class="ic"><use href="#i-check"/></svg></span>Без экспорта докладов</div></div></div>
+    <div class="plan plan-hl"><div class="plan-badge">Ядро</div><div class="plan-header"><div class="plan-name">Premium</div>
+      <div class="plan-price"><span class="price-amount">₽599</span><span class="price-period">/ мес · ₽4 990/год</span></div>
+      <div class="plan-desc">Безлимит, все предметы, доклады, родительская панель, ОГЭ/ЕГЭ.</div></div>
+      <div class="plan-feats"><div class="feat"><span class="feat-check"><svg class="ic"><use href="#i-check"/></svg></span>Годовая −30%</div><div class="feat"><span class="feat-check"><svg class="ic"><use href="#i-check"/></svg></span>Триал 7 дней / первый месяц 1 ₽</div></div></div>
+    <div class="plan plan-dark"><div class="plan-header"><div class="plan-name">Family</div>
+      <div class="plan-price"><span class="price-amount">₽899</span><span class="price-period" style="color:rgba(255,255,255,.5)">/ мес</span></div>
+      <div class="plan-desc">2–3 ребёнка. Ниже отток, выше LTV.</div></div>
+      <div class="plan-feats"><div class="feat"><span class="feat-check"><svg class="ic"><use href="#i-check"/></svg></span>Общий родительский кабинет</div><div class="feat"><span class="feat-check"><svg class="ic"><use href="#i-check"/></svg></span>+ Экзамен-пакет ₽1 490 (сезон)</div></div></div>
+  </div>
+  <div class="note"><svg class="ic"><use href="#i-bulb"/></svg><span>Обоснование: Skysmart ~157 000 ₽/год за живого репетитора → мы ~30× дешевле за безлимит. Против бесплатного Яндекса — широта, геймификация, семья. Оплата: ЮKassa/СБП; в Telegram — Telegram Payments/Stars.</span></div>
+</div></div>
+
+<!-- DISCOUNTS -->
+<div class="section" id="discounts"><div class="wrap">
+  <div class="sec-hdr"><div class="sec-tag"><svg class="ic"><use href="#i-tag"/></svg>Скидки</div>
+    <h2>Триггерные и временные, не постоянное снижение цены</h2></div>
+  <div class="card card-pad"><div style="overflow-x:auto"><table class="tbl" style="min-width:560px">
+    <thead><tr><th>Скидка</th><th>Размер</th><th>Цель</th></tr></thead><tbody>
+      <tr><td><strong>Годовая подписка</strong></td><td>−30%</td><td>Кэш-флоу, удержание</td></tr>
+      <tr><td><strong>Семейная</strong></td><td>2–3 ребёнок дешевле</td><td>Рост LTV</td></tr>
+      <tr class="hl-col"><td><strong>Реферальная «Приведи друга»</strong></td><td>обоим +1 месяц Premium</td><td>Виральный рост, низкий CAC</td></tr>
+      <tr><td><strong>Сезонные акции</strong></td><td>−30–40% (1 сентября, до ОГЭ/ЕГЭ)</td><td>Пики спроса</td></tr>
+      <tr><td><strong>Лояльность за стрик</strong></td><td>30 дней → −10% / бонус-дни</td><td>Связка с геймификацией</td></tr>
+      <tr><td><strong>Учительская/амбассадор</strong></td><td>промокод учителя → скидка ученику</td><td>B2B2C-канал</td></tr>
+      <tr><td><strong>Раннее продление</strong></td><td>−15%</td><td>Снижение оттока</td></tr>
+    </tbody></table></div></div>
+</div></div>
+
+<!-- PROMO -->
+<div class="section" id="promo"><div class="wrap">
+  <div class="sec-hdr"><div class="sec-tag"><svg class="ic"><use href="#i-megaphone"/></svg>Продвижение</div>
+    <h2>Каналы по приоритету и ROI</h2>
+    <p>На старте — органика + реферал + контент (низкий CAC). Платный трафик заливать после LTV/CAC > 3.</p></div>
+  <div class="chan-grid" style="margin-bottom:20px">
+    <div class="chan"><div class="chan-ic"><svg class="ic"><use href="#i-send"/></svg></div><h4>Telegram + VK (ядро)</h4><p>Таргет на родителей через школьные/родительские сообщества; реклама в каналах для родителей и школьников.</p></div>
+    <div class="chan"><div class="chan-ic"><svg class="ic"><use href="#i-share"/></svg></div><h4>Реферальная петля</h4><p>«Приведи друга → месяц в подарок»; шеринг доклада/достижения с водяным знаком OnFive.</p></div>
+    <div class="chan"><div class="chan-ic"><svg class="ic"><use href="#i-pen"/></svg></div><h4>Контент-маркетинг</h4><p>Telegram-канал «задача дня с разбором», лайфхаки, советы родителям; кросс-постинг в VK.</p></div>
+    <div class="chan"><div class="chan-ic"><svg class="ic"><use href="#i-building"/></svg></div><h4>B2B2C через учителей</h4><p>Промокоды-амбассадоры, бесплатный доступ учителю; выход на школы.</p></div>
+    <div class="chan"><div class="chan-ic"><svg class="ic"><use href="#i-star"/></svg></div><h4>Инфлюенсеры</h4><p>Мамы-блогеры, edu-блогеры, репетиторы — нативные интеграции / CPA.</p></div>
+    <div class="chan"><div class="chan-ic"><svg class="ic"><use href="#i-search"/></svg></div><h4>PR + ASO/SEO</h4><p>Питч в РБК Тренды/vc.ru: «независимый AI-репетитор по всем предметам». Посадочные «помощь с домашкой по [предмету]».</p></div>
+  </div>
+  <div class="card card-pad">
+    <div class="card-title">Воронка</div>
+    <div class="funnel">
+      <span class="fstep">Реклама / контент</span><span class="farrow">→</span>
+      <span class="fstep">Бесплатный вход</span><span class="farrow">→</span>
+      <span class="fstep">Крючок-геймификация</span><span class="farrow">→</span>
+      <span class="fstep">Лимит Free</span><span class="farrow">→</span>
+      <span class="fstep">Родитель видит пользу</span><span class="farrow">→</span>
+      <span class="fstep">Premium</span><span class="farrow">→</span>
+      <span class="fstep">Реферал</span>
+    </div>
+    <div class="note"><svg class="ic"><use href="#i-bulb"/></svg><span>Дорожная карта 90 дней: мес 1 — Telegram-канал + рефералка + посадочные; мес 2 — тесты платного трафика + учителя-амбассадоры + PR; мес 3 — масштабировать каналы с LTV/CAC&gt;3 + сезонная акция.</span></div>
+  </div>
+</div></div>
+
+<footer class="foot"><div class="wrap"><p>OnFive · Маркетинговая стратегия · Июнь 2026 · Источники: Smart Ranking, РБК Тренды, Sergey Sharov, Skysmart, Фоксфорд, vc.ru</p></div></footer>
+
+<script>
+function go(id,btn){document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});}
+</script>
+</body>
+</html>

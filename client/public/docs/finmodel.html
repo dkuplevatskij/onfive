@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OnFive — Финансовая модель</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-gem" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></symbol>
+  <symbol id="i-sliders" viewBox="0 0 24 24"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></symbol>
+  <symbol id="i-bot" viewBox="0 0 24 24"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></symbol>
+  <symbol id="i-message" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></symbol>
+  <symbol id="i-volume" viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/></symbol>
+  <symbol id="i-server" viewBox="0 0 24 24"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></symbol>
+  <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+  <symbol id="i-megaphone" viewBox="0 0 24 24"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></symbol>
+  <symbol id="i-building" viewBox="0 0 24 24"><rect width="16" height="20" x="4" y="2" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/></symbol>
+  <symbol id="i-graduation" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></symbol>
+</svg>
+
+<nav class="topnav"><div class="wrap topnav-inner">
+  <button class="navbtn active" onclick="go('pricing',this)"><svg class="ic"><use href="#i-gem"/></svg>Тарифы</button>
+  <button class="navbtn" onclick="go('unit',this)"><svg class="ic"><use href="#i-sliders"/></svg>Юнит-экономика</button>
+  <button class="navbtn" onclick="go('expenses',this)"><svg class="ic"><use href="#i-card"/></svg>Расходы</button>
+  <button class="navbtn" onclick="go('ltv',this)"><svg class="ic"><use href="#i-trend"/></svg>LTV / CAC</button>
+  <button class="navbtn" onclick="go('proj',this)"><svg class="ic"><use href="#i-calendar"/></svg>Прогноз 12 мес</button>
+  <button class="navbtn" onclick="go('sim',this)"><svg class="ic"><use href="#i-sliders"/></svg>Симулятор</button>
+  <button class="navbtn" onclick="go('rev',this)"><svg class="ic"><use href="#i-wallet"/></svg>Выручка</button>
+  <button class="navbtn" onclick="go('risks',this)"><svg class="ic"><use href="#i-alert"/></svg>Риски</button>
+</div></nav>
+
+<header class="hero"><div class="wrap hero-inner">
+  <div class="hero-tag"><svg class="ic"><use href="#i-zap"/></svg>Финмодель · OnFive · Июнь 2026</div>
+  <h1>OnFive<br><span>AI-репетитор по всем предметам, 5–11 класс</span></h1>
+  <p>Сократический AI-репетитор: не решает за ученика, а доводит до ответа. Монетизация — freemium-подписка (платит родитель) + сезонные пакеты ОГЭ/ЕГЭ. Главный рычаг экономики — низкая себестоимость AI (Claude Sonnet/Haiku) и контроль стоимости озвучки.</p>
+  <div class="hero-kpis">
+    <div class="hkpi"><div class="hkpi-v num">₽1.45M</div><div class="hkpi-l">MRR на месяц 12 (база)</div><div class="hkpi-d">ARR ≈ ₽17M</div></div>
+    <div class="hkpi"><div class="hkpi-v num">Месяц 8</div><div class="hkpi-l">Точка безубыточности</div><div class="hkpi-d">накопл. убыток ≈ ₽1.6M</div></div>
+    <div class="hkpi"><div class="hkpi-v num">~70%</div><div class="hkpi-l">Валовая маржа</div><div class="hkpi-d">до 80% с Haiku + кэш</div></div>
+    <div class="hkpi"><div class="hkpi-v num">13.6×</div><div class="hkpi-l">LTV / CAC (Premium)</div><div class="hkpi-d">Family — 19.6×</div></div>
+  </div>
+</div></header>
+
+<div class="section" id="pricing"><div class="wrap">
+  <div class="sec-hdr">
+    <div class="sec-tag"><svg class="ic"><use href="#i-gem"/></svg>Монетизация</div>
+    <h2>Freemium-подписка: платит родитель</h2>
+    <p>Free кормит воронку и виральность, Premium делает выручку, Family повышает LTV. Сезонный пакет ОГЭ/ЕГЭ снимает пиковый спрос 9 и 11 классов.</p>
+  </div>
+  <div class="pricing-grid" style="margin-bottom:20px">
+    <div class="plan">
+      <div class="plan-header"><div class="plan-name" style="color:var(--ink4)">Free</div>
+        <div class="plan-price"><span class="price-amount">₽0</span><span class="price-period">/ мес</span></div>
+        <div class="plan-desc">Вход в воронку. Себестоимость ≈ ₽40/мес — дешёвый маркетинговый канал. Лимиты критичны.</div></div>
+      <div class="plan-feats">
+        <div class="feat"><span class="feat-check"><svg class="ic"><use href="#i-check"/></svg></span>10 сообщений в день</div>
+        <div class="feat"><span class="feat-check"><svg class="ic"><use href="#i-check"/></svg></span>1 активный предмет</div>
+        <div class="feat"><span class="feat-check"><svg class="ic"><use href="#i-check"/></svg></span>Без экспорта докладов</div>
+      </div></div>
+    <div class="plan plan-hl">
+      <div class="plan-badge">Ядро выручки</div>
+      <div class="plan-header"><div class="plan-name">Premium</div>
+        <div class="plan-price"><span class="price-amount">₽599</span><span class="price-period">/ мес · ₽4 990/год</span></div>
+        <div class="plan-desc">Безлимит по всем предметам. Реальный COGS ≈ ₽150 → маржа ~75%.</div></div>
+      <div class="plan-feats">
+        <div class="feat"><span class="feat-check"><svg class="ic"><use href="#i-check"/></svg></span>Безлимит чат, все предметы 5–11</div>
+        <div class="feat"><span class="feat-check"><svg class="ic"><use href="#i-check"/></svg></span>Доклады + экспорт .docx/.pdf</div>
+        <div class="feat"><span class="feat-check"><svg class="ic"><use href="#i-check"/></svg></span>Голосовой ввод · родительская панель</div>
+        <div class="feat"><span class="feat-check"><svg class="ic"><use href="#i-check"/></svg></span>Режимы ОГЭ/ЕГЭ</div>
+      </div></div>
+    <div class="plan plan-dark">
+      <div class="plan-header"><div class="plan-name">Family</div>
+        <div class="plan-price"><span class="price-amount">₽899</span><span class="price-period" style="color:rgba(255,255,255,.5)">/ мес</span></div>
+        <div class="plan-desc">2–3 ребёнка под одной подпиской. Ниже отток, выше LTV.</div></div>
+      <div class="plan-feats">
+        <div class="feat"><span class="feat-check"><svg class="ic"><use href="#i-check"/></svg></span>Premium на 2–3 детей</div>
+        <div class="feat"><span class="feat-check"><svg class="ic"><use href="#i-check"/></svg></span>Общий родительский кабинет</div>
+        <div class="feat"><span class="feat-check"><svg class="ic"><use href="#i-check"/></svg></span>Отдельные профили и рейтинг</div>
+      </div></div>
+  </div>
+  <div class="grid2">
+    <div class="card card-pad"><div class="card-title"><span class="icbox"><svg class="ic"><use href="#i-graduation"/></svg></span>Экзамен-пакет · ₽1 490 разово</div>
+      <p style="font-size:13.5px;color:var(--ink3);line-height:1.6">Интенсив-режим подготовки к ОГЭ/ЕГЭ на 3 месяца. Монетизация сезонного спроса 9 и 11 классов (рынок онлайн-подготовки к экзаменам растёт +50%/год).</p></div>
+    <div class="card card-pad"><div class="card-title"><span class="icbox"><svg class="ic"><use href="#i-building"/></svg></span>Школы (B2B2C) · среднесрок</div>
+      <p style="font-size:13.5px;color:var(--ink3);line-height:1.6">Мультитенант для класса/школы + аналитика учителя. Высокий чек, длинный цикл продаж. Подключается через учителей-амбассадоров на этапе масштабирования.</p></div>
+  </div>
+</div></div>
+
+<div class="section" id="unit"><div class="wrap">
+  <div class="sec-hdr"><div class="sec-tag"><svg class="ic"><use href="#i-sliders"/></svg>Юнит-экономика</div>
+    <h2>Себестоимость AI-действий</h2>
+    <p>Claude Sonnet 4.6 ($3/$15 за 1M токенов) для чата, Haiku 4.5 ($1/$5) для простых задач. Курс ₽95/$.</p></div>
+  <div class="cogs-grid" style="margin-bottom:24px">
+    <div class="cogs-card"><div class="cogs-icon"><svg class="ic"><use href="#i-bot"/></svg></div><div class="cogs-name">Сообщение (Sonnet)</div><div class="cogs-price num">₽1.0</div></div>
+    <div class="cogs-card"><div class="cogs-icon"><svg class="ic"><use href="#i-zap"/></svg></div><div class="cogs-name">Сообщение (Haiku)</div><div class="cogs-price num">₽0.33</div></div>
+    <div class="cogs-card warn"><div class="cogs-icon"><svg class="ic"><use href="#i-volume"/></svg></div><div class="cogs-name">Озвучка (ElevenLabs)</div><div class="cogs-price num">₽10.5</div></div>
+    <div class="cogs-card"><div class="cogs-icon"><svg class="ic"><use href="#i-mic"/></svg></div><div class="cogs-name">Голосовой ввод</div><div class="cogs-price num">₽0.3</div></div>
+    <div class="cogs-card"><div class="cogs-icon"><svg class="ic"><use href="#i-file"/></svg></div><div class="cogs-name">Генерация доклада</div><div class="cogs-price num">₽3</div></div>
+    <div class="cogs-card"><div class="cogs-icon"><svg class="ic"><use href="#i-server"/></svg></div><div class="cogs-name">Инфра на юзера</div><div class="cogs-price num">₽0.5</div></div>
+  </div>
+  <div class="card card-pad">
+    <div class="card-title">COGS и маржа по тарифам (реальная утилизация)</div>
+    <div style="overflow-x:auto"><table class="tbl" style="min-width:640px">
+      <thead><tr><th>Тариф</th><th>Цена / мес</th><th>COGS реальный</th><th>Валовая маржа</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Free</strong></td><td>₽0</td><td>₽40</td><td><span class="pill pill-sky">CAC-расход</span></td></tr>
+        <tr><td><strong>Premium</strong></td><td>₽599 (≈₽544 с годовыми)</td><td>₽150</td><td><span class="pill pill-green">~75%</span></td></tr>
+        <tr><td><strong>Family</strong></td><td>₽899 (≈₽820)</td><td>₽300</td><td><span class="pill pill-green">~63%</span></td></tr>
+        <tr><td><strong>Экзамен-пакет</strong></td><td>₽497 (₽1490/3 мес)</td><td>₽220</td><td><span class="pill pill-amber">~56%</span></td></tr>
+      </tbody></table></div>
+    <div class="note"><svg class="ic"><use href="#i-bulb"/></svg>
+      <span><strong>Озвучка решено убрана</strong> (ElevenLabs ₽10.5/ответ выжигал маржу) — вернём позже на бесплатном self-host движке <strong>Silero</strong>. Дополнительные рычаги: маршрутизация простых запросов на Haiku (×3 дешевле) + кэширование системного промпта → маржа Premium 75–80%.</span></div>
+  </div>
+</div></div>
+
+<div class="section" id="expenses"><div class="wrap">
+  <div class="sec-hdr"><div class="sec-tag"><svg class="ic"><use href="#i-card"/></svg>Структура расходов</div>
+    <h2>Из чего складываются расходы</h2>
+    <p>Переменные (растут с выручкой и потреблением AI) + фиксированные (команда, маркетинг, инфраструктура).</p></div>
+  <div class="grid2">
+    <div class="card card-pad"><div class="card-title"><span class="icbox"><svg class="ic"><use href="#i-zap"/></svg></span>Переменные (COGS)</div>
+      <table class="tbl"><thead><tr><th>Статья</th><th>Драйвер</th><th>Величина</th></tr></thead><tbody>
+        <tr><td><strong>AI API</strong><div style="font-size:12px;color:var(--ink4)">Claude (чат, доклады)</div></td><td>Активность</td><td><strong>~15%</strong> MRR</td></tr>
+        <tr><td><strong>Эквайринг</strong><div style="font-size:12px;color:var(--ink4)">ЮKassa / СБП</div></td><td>Оборот</td><td><strong>3.5%</strong> MRR</td></tr>
+      </tbody></table>
+      <div class="note"><svg class="ic"><use href="#i-bulb"/></svg><span>На месяце 12 (MRR ₽1.45M): AI ≈ ₽220K + эквайринг ≈ ₽51K. Маржа держится ~75% (озвучка убрана).</span></div></div>
+    <div class="card card-pad"><div class="card-title"><span class="icbox"><svg class="ic"><use href="#i-building"/></svg></span>Фиксированные — ₽300K/мес на старте</div>
+      <table class="tbl"><thead><tr><th>Статья</th><th>Состав</th><th>₽/мес</th></tr></thead><tbody>
+        <tr><td style="white-space:nowrap"><strong>ФОТ</strong></td><td style="font-size:12.5px">Разработка + контент/саппорт</td><td><strong>230 000</strong></td></tr>
+        <tr><td style="white-space:nowrap"><strong>Маркетинг</strong></td><td style="font-size:12.5px">Таргет VK/TG, контент, рефералка</td><td><strong>60 000</strong></td></tr>
+        <tr><td style="white-space:nowrap"><strong>Инфраструктура</strong></td><td style="font-size:12.5px">Supabase Pro + Vercel + домены</td><td><strong>10 000</strong></td></tr>
+        <tr class="total-row"><td colspan="2">Итого фиксированных</td><td><strong>300 000</strong></td></tr>
+      </tbody></table></div>
+  </div>
+</div></div>
+
+<div class="section" id="ltv"><div class="wrap">
+  <div class="sec-hdr"><div class="sec-tag"><svg class="ic"><use href="#i-trend"/></svg>Retention-экономика</div>
+    <h2>LTV / CAC сходится с большим запасом</h2>
+    <p>Отток: Premium 8%/мес, Family 6%/мес. CAC через контент + рефералку + таргет.</p></div>
+  <div class="card card-pad"><div style="overflow-x:auto"><table class="tbl" style="min-width:640px">
+    <thead><tr><th>Сегмент</th><th>ARPU</th><th>Срок жизни</th><th>LTV</th><th>CAC</th><th>LTV / CAC</th></tr></thead><tbody>
+      <tr><td><strong>Premium</strong></td><td>₽544</td><td>12.5 мес</td><td>₽6 800</td><td>₽500</td><td><span class="pill pill-green">13.6×</span></td></tr>
+      <tr class="hl-col"><td><strong>Family</strong></td><td>₽820</td><td>16.7 мес</td><td><strong>₽13 700</strong></td><td>₽700</td><td><span class="pill pill-violet">19.6×</span></td></tr>
+      <tr><td><strong>Экзамен-пакет</strong></td><td>₽1 490 разово</td><td>—</td><td>₽1 490</td><td>₽400</td><td><span class="pill pill-green">3.7×</span></td></tr>
+    </tbody></table></div>
+    <div style="margin-top:14px;font-size:13px;color:var(--ink4)">Бенчмарк здорового продукта — LTV/CAC ≥ 3×. По подпискам 13–20× — большой запас на платный маркетинг (заливать после подтверждённой конверсии).</div>
+  </div>
+</div></div>
+
+<div class="section" id="proj"><div class="wrap">
+  <div class="sec-hdr"><div class="sec-tag"><svg class="ic"><use href="#i-calendar"/></svg>Прогноз</div>
+    <h2>12 месяцев: три сценария</h2>
+    <p>База: 2 000 регистраций/мес (+20% MoM, органика и рефералы), конверсия free→paid 4%, отток Premium 8%/мес.</p></div>
+  <div class="card card-pad">
+    <div class="chart-tabs">
+      <button class="ctab" onclick="scen('pess',this)">Пессимистичный</button>
+      <button class="ctab active" onclick="scen('base',this)">Базовый</button>
+      <button class="ctab" onclick="scen('opt',this)">Оптимистичный</button>
+    </div>
+    <div class="bar-chart" id="chart"></div>
+    <div id="scenNote" style="margin-top:18px;padding:14px 16px;background:var(--violet-lll);border:1px solid #DDD6FE;border-radius:var(--r);font-size:13.5px;color:var(--ink2)"></div>
+  </div>
+  <div class="card card-pad" style="margin-top:20px"><div class="card-title">Помесячная раскладка — базовый сценарий</div>
+    <div style="overflow-x:auto"><table class="tbl" style="min-width:700px">
+      <thead><tr><th>Месяц</th><th>Free (актив)</th><th>Premium</th><th>Family</th><th>MRR</th><th>Расходы*</th><th>Прибыль</th></tr></thead><tbody>
+        <tr><td>1</td><td>1 500</td><td>70</td><td>16</td><td>₽47K</td><td>₽312K</td><td style="color:var(--rose);font-weight:700">−₽265K</td></tr>
+        <tr><td>3</td><td>4 000</td><td>238</td><td>52</td><td>₽160K</td><td>₽360K</td><td style="color:var(--rose);font-weight:700">−₽200K</td></tr>
+        <tr><td>6</td><td>9 000</td><td>590</td><td>130</td><td>₽405K</td><td>₽461K</td><td style="color:var(--rose);font-weight:700">−₽56K</td></tr>
+        <tr class="hl-col"><td><strong>8</strong></td><td>13 000</td><td>820</td><td>180</td><td><strong>₽640K</strong></td><td>₽600K</td><td style="color:var(--emerald);font-weight:800">+₽40K</td></tr>
+        <tr><td>12</td><td>28 000</td><td>2 025</td><td>445</td><td><strong>₽1.45M</strong></td><td>₽870K</td><td style="color:var(--emerald);font-weight:800">+₽585K</td></tr>
+      </tbody></table></div>
+    <div class="note"><svg class="ic"><use href="#i-bulb"/></svg><span>* Расходы = фикс (₽300→500K) + переменные (AI ~15% MRR + эквайринг 3.5%). Точка безубыточности — месяц 8.</span></div>
+  </div>
+</div></div>
+
+<div class="section" id="sim"><div class="wrap">
+  <div class="sec-hdr"><div class="sec-tag"><svg class="ic"><use href="#i-sliders"/></svg>Интерактив</div>
+    <h2>Симулятор MRR</h2>
+    <p>Подвигайте ползунки — модель пересчитает выручку, COGS и прибыль. Иллюстративно.</p></div>
+  <div class="sim-grid">
+    <div class="card card-pad">
+      <div class="slider-row"><div class="slider-head"><span class="slider-name"><svg class="ic"><use href="#i-user"/></svg>Premium (₽599)</span><span class="slider-val" id="v-prem">2025</span></div><input type="range" min="0" max="6000" value="2025" oninput="sim()" id="s-prem"></div>
+      <div class="slider-row"><div class="slider-head"><span class="slider-name"><svg class="ic"><use href="#i-users"/></svg>Family (₽899)</span><span class="slider-val" id="v-fam">445</span></div><input type="range" min="0" max="1500" value="445" oninput="sim()" id="s-fam"></div>
+      <div class="slider-row"><div class="slider-head"><span class="slider-name"><svg class="ic"><use href="#i-graduation"/></svg>Экзамен-пакетов / мес</span><span class="slider-val" id="v-exam">50</span></div><input type="range" min="0" max="400" value="50" oninput="sim()" id="s-exam"></div>
+      <div class="slider-row"><div class="slider-head"><span class="slider-name"><svg class="ic"><use href="#i-flame"/></svg>Утилизация AI</span><span class="slider-val" id="v-util">40%</span></div><input type="range" min="10" max="100" value="40" oninput="sim()" id="s-util"></div>
+      <div class="slider-row" style="margin-bottom:0"><div class="slider-head"><span class="slider-name"><svg class="ic"><use href="#i-card"/></svg>Фикс. расходы / мес</span><span class="slider-val" id="v-fix">₽500K</span></div><input type="range" min="100" max="1500" step="10" value="500" oninput="sim()" id="s-fix"></div>
+    </div>
+    <div class="sim-out">
+      <div class="sim-mrr-lbl">Monthly Recurring Revenue</div>
+      <div class="sim-mrr-val num" id="o-mrr">₽1 459 000</div>
+      <div class="sim-row"><span>ARR (годовая)</span><span id="o-arr">₽17.5M</span></div>
+      <div class="sim-row"><span>COGS (AI + эквайринг 3.5%)</span><span id="o-cogs">₽—</span></div>
+      <div class="sim-row"><span>Валовая маржа</span><span id="o-gm">—%</span></div>
+      <div class="sim-row"><span>Фикс. расходы</span><span id="o-fix">₽500 000</span></div>
+      <div class="sim-row"><span>Чистая прибыль / мес</span><span id="o-prof">₽—</span></div>
+      <div class="sim-row"><span>Прибыль / год (run-rate)</span><span id="o-profy">₽—</span></div>
+    </div>
+  </div>
+</div></div>
+
+<div class="section" id="rev"><div class="wrap">
+  <div class="sec-hdr"><div class="sec-tag"><svg class="ic"><use href="#i-wallet"/></svg>Структура выручки</div>
+    <h2>Premium — ядро, Family — рычаг LTV</h2>
+    <p>Срез на месяц 12 базового сценария.</p></div>
+  <div class="card card-pad">
+    <div class="split-bar">
+      <div class="split-seg" style="width:74%;background:#8B5CF6">74%</div>
+      <div class="split-seg" style="width:24%;background:#0A0A12">24%</div>
+      <div class="split-seg" style="width:2%;background:#059669"></div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot" style="background:#8B5CF6"></span>Premium · 2 025 × ₽544 = ₽1.10M</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#0A0A12"></span>Family · 445 × ₽820 = ₽365K</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#059669"></span>Экзамен-пакет · ≈₽25K</div>
+    </div>
+    <div style="margin-top:18px;padding:14px 16px;background:var(--emerald-l);border:1px solid #A7F3D0;border-radius:var(--r);font-size:13.5px;color:#065F46">
+      <strong>Инсайт:</strong> низкий ARPU компенсируется масштабом и виральностью (рефералы + шеринг докладов). Следующий контур роста чека — <strong>B2B-школы</strong>: одна школа на 20–30 учеников эквивалентна десяткам B2C-подписок при более низком оттоке.</div>
+  </div>
+</div></div>
+
+<div class="section" id="risks"><div class="wrap">
+  <div class="sec-hdr"><div class="sec-tag"><svg class="ic"><use href="#i-alert"/></svg>Риски и митигации</div>
+    <h2>Что может пойти не так</h2></div>
+  <div class="grid2">
+    <div>
+      <div class="risk risk-high"><div class="risk-num">1</div><div><div class="risk-title">Бесплатный «Репетитор AI» Яндекса</div><div class="risk-text">Бесплатный сократический AI в 75% школ. <strong>Митигация:</strong> он узкий (ЕГЭ математика/информатика) — берём широтой по всем предметам 5–11, ежедневным сценарием с домашкой, геймификацией и семейным тарифом.</div></div></div>
+      <div class="risk risk-med"><div class="risk-num">2</div><div><div class="risk-title">Низкая конверсия free→paid / абуз free</div><div class="risk-text">При конверсии 2% безубыток сдвигается за горизонт. <strong>Митигация:</strong> жёсткие лимиты free, онбординг-воронка, триггерные апсейлы при упоре в лимит.</div></div></div>
+      <div class="risk risk-med"><div class="risk-num">3</div><div><div class="risk-title">Стоимость озвучки (в будущем)</div><div class="risk-text">ElevenLabs ₽10.5/ответ выжигал маржу — озвучка убрана. <strong>Митигация:</strong> вернём на self-host Silero (бесплатный русский голос) с лимитами.</div></div></div>
+    </div>
+    <div>
+      <div class="risk risk-med"><div class="risk-num">4</div><div><div class="risk-title">Рост цен LLM API и курс рубля</div><div class="risk-text">COGS привязан к Anthropic и курсу. <strong>Митигация:</strong> маршрутизация на Haiku (×3 дешевле), prompt caching, лимит max_tokens.</div></div></div>
+      <div class="risk risk-med"><div class="risk-num">5</div><div><div class="risk-title">Платёжная инфраструктура</div><div class="risk-text">ЮKassa ещё не подключена (Apple/Google в РФ ненадёжны). <strong>Митигация:</strong> веб-оплата + СБП + Telegram Payments; подключение шлюза — ~1 неделя.</div></div></div>
+      <div class="risk risk-med"><div class="risk-num">6</div><div><div class="risk-title">152-ФЗ — данные детей</div><div class="risk-text">Данные несовершеннолетних должны храниться в РФ. <strong>Митигация:</strong> graceful-fallback архитектура готова к переезду на self-hosted Supabase в Timeweb/Yandex.</div></div></div>
+    </div>
+  </div>
+</div></div>
+
+<footer class="foot"><div class="wrap"><p>OnFive · Финансовая модель · Июнь 2026 · Все суммы в ₽, курс $1 = ₽95 · Цифры иллюстративны</p></div></footer>
+
+<script>
+function go(id,btn){document.querySelectorAll('.navbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});}
+const SCEN={
+  pess:{mrr:[11,24,40,58,80,106,135,168,205,247,294,346],be:null,note:'<strong>Пессимистичный:</strong> конверсия 2%, рост +12% MoM. MRR месяц 12 — ₽346K, безубыток за горизонтом. Требуемый бюджет — до ₽3.5M.'},
+  base:{mrr:[47,100,160,230,310,405,515,640,795,975,1190,1450],be:8,note:'<strong>Базовый:</strong> 2 000 регистраций/мес (+20% MoM), конверсия 4%, отток Premium 8%. Безубыток — месяц 8, накопленный убыток ≈ ₽1.6M. ARR ≈ ₽17M.'},
+  opt:{mrr:[86,185,300,450,640,870,1150,1480,1880,2360,2940,3640],be:5,note:'<strong>Оптимистичный:</strong> конверсия 6%, +25% MoM, сильная рефералка. Безубыток — месяц 5, MRR месяц 12 — ₽3.6M (ARR ≈ ₽44M).'}
+};
+function chart(key){const d=SCEN[key];const max=Math.max(...d.mrr);const el=document.getElementById('chart');
+  el.innerHTML=d.mrr.map((v,i)=>{const h=Math.max(4,v/max*100);const profit=(key==='base'&&i+1>=8)||(key==='opt'&&i+1>=5);const be=d.be===i+1?' bar-be':'';
+    return `<div class="bar-col${profit?' profit':''}${be}"><div class="bar-val">${v>=1000?('₽'+(v/1000).toFixed(1)+'M'):('₽'+v+'K')}</div><div class="bar-stack" style="height:${h}%"></div><div class="bar-lbl">М${i+1}</div></div>`;}).join('');
+  document.getElementById('scenNote').innerHTML=d.note;}
+function scen(key,btn){document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');chart(key);}
+chart('base');
+const fmt=n=>'₽'+Math.round(n).toLocaleString('ru-RU');
+const fmtK=n=>n>=1e6?'₽'+(n/1e6).toFixed(1)+'M':'₽'+Math.round(n/1e3)+'K';
+function sim(){
+  const pr=+s_prem.value, fa=+s_fam.value, ex=+s_exam.value, u=+s_util.value, fx=+s_fix.value*1000;
+  v_prem.textContent=pr; v_fam.textContent=fa; v_exam.textContent=ex; v_util.textContent=u+'%'; v_fix.textContent=fmtK(fx);
+  const mrr=pr*544+fa*820+ex*497;
+  const k=u/40;
+  const cogsAI=(pr*150+fa*300+ex*220)*k;
+  const acq=mrr*0.035;
+  const cogs=cogsAI+acq;
+  const gm=mrr>0?(1-cogs/mrr)*100:0;
+  const profit=mrr-cogs-fx;
+  o_mrr.textContent=fmt(mrr); o_arr.textContent=fmtK(mrr*12); o_cogs.textContent=fmt(cogs);
+  o_gm.textContent=gm.toFixed(0)+'%'; o_fix.textContent=fmt(fx);
+  o_prof.textContent=(profit>=0?'+':'−')+'₽'+Math.abs(Math.round(profit)).toLocaleString('ru-RU');
+  o_profy.textContent=(profit>=0?'+':'−')+'₽'+Math.abs(Math.round(profit*12)).toLocaleString('ru-RU');
+  o_prof.className=profit>=0?'sim-profit-pos':'sim-profit-neg';
+  o_profy.className=profit>=0?'sim-profit-pos':'sim-profit-neg';
+}
+const $=id=>document.getElementById(id);
+['s-prem','s-fam','s-exam','s-util','s-fix','v-prem','v-fam','v-exam','v-util','v-fix','o-mrr','o-arr','o-cogs','o-gm','o-fix','o-prof','o-profy'].forEach(id=>{window[id.replace('-','_')]=$(id);});
+sim();
+</script>
+</body>
+</html>
