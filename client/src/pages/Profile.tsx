@@ -1,10 +1,12 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import { motion, type Variants } from "framer-motion";
-import { Flame, Sparkles, Coins, GraduationCap, Lock, ShieldCheck, ChevronRight, Pencil, Send, AtSign } from "lucide-react";
+import { Flame, Sparkles, Coins, GraduationCap, Lock, ShieldCheck, ChevronRight, Pencil, Send, AtSign, Mail, CircleCheck } from "lucide-react";
 import { useUserStore } from "../stores/user";
+import { useAuthStore } from "../stores/auth";
 import { levelFromXp } from "../lib/level";
 import { ACHIEVEMENTS } from "../data/achievements";
 import { useReportsStore } from "../stores/reports";
+import { isSupabaseConfigured } from "../lib/supabase";
 import { Avatar } from "../components/ui/Avatar";
 
 const stagger: Variants = { hidden: {}, show: { transition: { staggerChildren: 0.05 } } };
@@ -18,6 +20,8 @@ export function Profile() {
   const { grade, xp, coins, streak, nickname, firstName, lastName, telegram, vk, avatar } =
     useUserStore();
   const reportsCount = useReportsStore((s) => s.reports.length);
+  const isAnonymous = useAuthStore((s) => s.isAnonymous);
+  const email = useAuthStore((s) => s.email);
 
   if (grade === null) return <Navigate to="/" replace />;
 
@@ -126,10 +130,31 @@ export function Profile() {
         })}
       </motion.div>
 
+      {isSupabaseConfigured && (
+        <motion.button
+          variants={rise}
+          onClick={() => navigate("/account")}
+          className="press mt-7 flex w-full items-center gap-3 rounded-[var(--radius-card)] bg-surface p-5 text-left shadow-soft hover:shadow-glow"
+        >
+          <div className={`grid h-11 w-11 place-items-center rounded-xl text-white ${isAnonymous ? "bg-amber" : "aurora"}`}>
+            {isAnonymous ? <Mail size={20} /> : <CircleCheck size={20} />}
+          </div>
+          <div className="flex-1">
+            <div className="font-bold tracking-tight">
+              {isAnonymous ? "Сохрани прогресс" : "Аккаунт"}
+            </div>
+            <div className="text-sm text-ink-soft">
+              {isAnonymous ? "Привяжи e-mail — вход с любого устройства" : (email ?? "Вход выполнен")}
+            </div>
+          </div>
+          <ChevronRight className="text-ink-faint" />
+        </motion.button>
+      )}
+
       <motion.button
         variants={rise}
         onClick={() => navigate("/parent")}
-        className="press mt-7 flex w-full items-center gap-3 rounded-[var(--radius-card)] bg-surface p-5 text-left shadow-soft hover:shadow-glow"
+        className="press mt-3 flex w-full items-center gap-3 rounded-[var(--radius-card)] bg-surface p-5 text-left shadow-soft hover:shadow-glow"
       >
         <div className="aurora grid h-11 w-11 place-items-center rounded-xl text-white">
           <ShieldCheck size={20} />

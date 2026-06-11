@@ -15,6 +15,7 @@ const Profile = lazy(() => import("../pages/Profile").then((m) => ({ default: m.
 const ProfileEdit = lazy(() =>
   import("../pages/ProfileEdit").then((m) => ({ default: m.ProfileEdit })),
 );
+const Account = lazy(() => import("../pages/Account").then((m) => ({ default: m.Account })));
 const Quiz = lazy(() => import("../pages/Quiz").then((m) => ({ default: m.Quiz })));
 const Parent = lazy(() => import("../pages/Parent").then((m) => ({ default: m.Parent })));
 const GradeSelect = lazy(() =>
@@ -58,6 +59,7 @@ export const router = createBrowserRouter([
         children: [
           { path: "/quiz", element: <Quiz /> },
           { path: "/profile/edit", element: <ProfileEdit /> },
+          { path: "/account", element: <Account /> },
           { path: "/parent", element: <Parent /> },
           { path: "/onboarding", element: <GradeSelect /> },
           { path: "/subjects", element: <SubjectSelect /> },

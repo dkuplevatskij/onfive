@@ -15,6 +15,8 @@ interface AuthState {
   userId: string | null;
   /** Сессия анонимная (можно предложить «сохранить прогресс» через апгрейд). */
   isAnonymous: boolean;
+  /** E-mail аккаунта или null (анонимный/не задан). */
+  email: string | null;
   /** Идемпотентная инициализация: вызывается один раз на старте приложения. */
   init: () => Promise<void>;
 }
@@ -25,6 +27,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
   status: isSupabaseConfigured ? "loading" : "disabled",
   userId: null,
   isAnonymous: false,
+  email: null,
 
   init: async () => {
     if (!supabase || initStarted) return;
@@ -36,6 +39,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
       set({
         userId: user?.id ?? null,
         isAnonymous: user?.is_anonymous ?? false,
+        email: user?.email ?? null,
         status: user ? "ready" : "loading",
       });
     });
@@ -43,7 +47,12 @@ export const useAuthStore = create<AuthState>()((set) => ({
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
-        set({ userId: session.user.id, isAnonymous: session.user.is_anonymous ?? false, status: "ready" });
+        set({
+          userId: session.user.id,
+          isAnonymous: session.user.is_anonymous ?? false,
+          email: session.user.email ?? null,
+          status: "ready",
+        });
         return;
       }
       // Сессии нет — заводим анонимную, чтобы сразу синхронизировать прогресс.
@@ -52,7 +61,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
         set({ status: "error" });
         return;
       }
-      set({ userId: data.user.id, isAnonymous: true, status: "ready" });
+      set({ userId: data.user.id, isAnonymous: true, email: null, status: "ready" });
     } catch {
       set({ status: "error" });
     }
