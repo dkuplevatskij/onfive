@@ -42,6 +42,8 @@ interface UserState {
   parentPin: string | null;
   /** Семейные коды привязанных детей (для родителя). */
   children: string[];
+  /** Семейные коды добавленных друзей (для рейтинга «Друзья»). */
+  friends: string[];
 
   /** Ник для рейтинга (пустое → показываем «Ученик»). */
   nickname: string;
@@ -70,6 +72,9 @@ interface UserState {
   /** Привязать ребёнка по семейному коду (для родителя). */
   addChild: (code: string) => void;
   removeChild: (code: string) => void;
+  /** Добавить/убрать друга по семейному коду. */
+  addFriend: (code: string) => void;
+  removeFriend: (code: string) => void;
   /** Частичное обновление полей профиля (ник, имя, фамилия, контакты, аватар). */
   setProfile: (patch: Partial<ProfileFields>) => void;
   toggleTheme: () => void;
@@ -120,6 +125,7 @@ export const useUserStore = create<UserState>()(
       familyCode: makeFamilyCode(),
       parentPin: null,
       children: [],
+      friends: [],
       nickname: "",
       firstName: "",
       lastName: "",
@@ -143,6 +149,15 @@ export const useUserStore = create<UserState>()(
         }),
       removeChild: (code) =>
         set((s) => ({ children: s.children.filter((c) => c !== code) })),
+      addFriend: (code) =>
+        set((s) => {
+          const c = code.trim().toUpperCase();
+          // Нельзя добавить свой же код.
+          if (!c || c === s.familyCode || s.friends.includes(c)) return {};
+          return { friends: [...s.friends, c] };
+        }),
+      removeFriend: (code) =>
+        set((s) => ({ friends: s.friends.filter((c) => c !== code) })),
       setProfile: (patch) =>
         set((s) => ({
           nickname: (patch.nickname ?? s.nickname).slice(0, 24),
