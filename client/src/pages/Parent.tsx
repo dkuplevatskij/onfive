@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -10,12 +10,20 @@ import {
   BookOpen,
   Lightbulb,
   Copy,
+  UserPlus,
+  X,
+  Loader2,
+  FileText,
+  GraduationCap,
 } from "lucide-react";
 import { useUserStore } from "../stores/user";
 import { levelFromXp } from "../lib/level";
 import { subjectsForGrade } from "../data/subjects";
 import { SUBJECT_COLOR } from "../data/subjectColors";
 import { SUBJECT_ICON } from "../data/subjectIcons";
+import { isSupabaseConfigured } from "../lib/supabase";
+import { fetchChildByCode, type ChildProgress } from "../lib/cloud";
+import { Avatar } from "../components/ui/Avatar";
 
 /** Родительская панель: PIN-гейт + аналитика по ребёнку. */
 export function Parent() {
@@ -121,8 +129,92 @@ function PinGate({
   );
 }
 
+/** Карточка прогресса привязанного ребёнка (по семейному коду). */
+function ChildCard({ code, onRemove }: { code: string; onRemove: () => void }) {
+  // undefined — загрузка, null — не найден, иначе — данные.
+  const [data, setData] = useState<ChildProgress | null | undefined>(undefined);
+
+  useEffect(() => {
+    let cancelled = false;
+    setData(undefined);
+    fetchChildByCode(code).then((d) => !cancelled && setData(d));
+    return () => {
+      cancelled = true;
+    };
+  }, [code]);
+
+  const level = data ? levelFromXp(data.xp) : null;
+
+  return (
+    <div className="rounded-[var(--radius-card)] bg-surface p-4 shadow-soft">
+      <div className="flex items-center gap-3">
+        <Avatar value={data?.avatar ?? ""} name={data?.nickname ?? ""} size={40} className="rounded-xl" />
+        <div className="min-w-0 flex-1">
+          <div className="truncate font-bold tracking-tight">
+            {data?.nickname || (data === null ? "Не найден" : "Ребёнок")}
+          </div>
+          <div className="text-xs text-ink-faint tabular-nums">
+            {code}
+            {data?.grade ? ` · ${data.grade}-й класс` : ""}
+          </div>
+        </div>
+        <button onClick={onRemove} aria-label="Отвязать" className="press grid h-8 w-8 place-items-center rounded-full bg-bg text-ink-soft">
+          <X size={15} />
+        </button>
+      </div>
+
+      {data === undefined && (
+        <div className="mt-3 flex items-center gap-2 text-sm text-ink-faint">
+          <Loader2 size={14} className="animate-spin" /> Загружаем…
+        </div>
+      )}
+      {data === null && (
+        <p className="mt-2 text-sm text-ink-soft">Код не найден. Проверьте его в профиле ребёнка.</p>
+      )}
+      {data && (
+        <>
+          {level && (
+            <div className="mt-3 text-sm font-semibold text-ink-soft">
+              {level.title} ·{" "}
+              <span className="text-ink">{data.xp.toLocaleString("ru-RU")} XP</span>
+            </div>
+          )}
+          <div className="mt-2 grid grid-cols-4 gap-2 text-center">
+            <ChildStat Icon={Flame} value={`${data.streak}`} label="дн." color="text-coral" />
+            <ChildStat Icon={Coins} value={`${data.coins}`} label="монет" color="text-amber" />
+            <ChildStat Icon={FileText} value={`${data.reportsCount}`} label="докл." color="text-teal" />
+            <ChildStat Icon={GraduationCap} value={data.grade ? `${data.grade}` : "—"} label="класс" color="text-blue" />
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function ChildStat({
+  Icon,
+  value,
+  label,
+  color,
+}: {
+  Icon: typeof Flame;
+  value: string;
+  label: string;
+  color: string;
+}) {
+  return (
+    <div className="flex flex-col items-center gap-0.5 rounded-xl bg-bg p-2">
+      <Icon size={15} className={color} />
+      <span className="font-display text-base font-extrabold tabular-nums leading-none">{value}</span>
+      <span className="text-[10px] text-ink-faint">{label}</span>
+    </div>
+  );
+}
+
 function Analytics({ onExit }: { onExit: () => void }) {
-  const { grade, xp, coins, streak, daily, familyCode } = useUserStore();
+  const { grade, xp, coins, streak, daily, familyCode, children, addChild, removeChild } =
+    useUserStore();
+  const [codeInput, setCodeInput] = useState("");
   const level = levelFromXp(xp);
   const subjects = grade ? subjectsForGrade(grade).slice(0, 5) : [];
   // Мок-распределение активности по предметам (до подключения бэкенда)
@@ -189,6 +281,44 @@ function Analytics({ onExit }: { onExit: () => void }) {
           );
         })}
       </div>
+
+      {/* Привязанные дети (по коду, из облака) */}
+      {isSupabaseConfigured && (
+        <>
+          <h2 className="mb-3 mt-7 text-sm font-bold uppercase tracking-wide text-ink-faint">
+            Дети
+          </h2>
+          <div className="flex gap-2">
+            <input
+              value={codeInput}
+              onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
+              placeholder="Код ребёнка · ONF5-XXXXXX"
+              className="w-full rounded-2xl bg-surface px-4 py-3 text-sm shadow-soft outline-none ring-1 ring-transparent transition focus:ring-violet placeholder:text-ink-faint"
+            />
+            <button
+              onClick={() => {
+                addChild(codeInput);
+                setCodeInput("");
+              }}
+              aria-label="Привязать ребёнка"
+              className="aurora press grid h-12 w-12 shrink-0 place-items-center rounded-2xl text-white shadow-glow"
+            >
+              <UserPlus size={20} />
+            </button>
+          </div>
+          {children.length === 0 ? (
+            <p className="mt-3 text-sm text-ink-soft">
+              Введите семейный код ребёнка (он есть в его профиле → «Родителям»), чтобы видеть прогресс.
+            </p>
+          ) : (
+            <div className="mt-3 space-y-3">
+              {children.map((code) => (
+                <ChildCard key={code} code={code} onRemove={() => removeChild(code)} />
+              ))}
+            </div>
+          )}
+        </>
+      )}
 
       {/* Семейный код */}
       <h2 className="mb-3 mt-7 text-sm font-bold uppercase tracking-wide text-ink-faint">

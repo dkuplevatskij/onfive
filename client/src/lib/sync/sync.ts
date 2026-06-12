@@ -36,6 +36,7 @@ function localProfile(): CloudProfile {
     avatar: s.avatar,
     grade: s.grade,
     goals: s.goals,
+    familyCode: s.familyCode,
   };
 }
 
@@ -70,6 +71,8 @@ export async function pullAndMerge(userId: string): Promise<void> {
     avatar: local.avatar || (cloud?.avatar ?? ""),
     grade: local.grade ?? cloud?.grade ?? null,
     goals: local.goals.length > 0 ? local.goals : cloud?.goals ?? [],
+    // Семейный код должен быть стабильным между устройствами: облачный важнее.
+    familyCode: cloud?.familyCode || local.familyCode,
   });
 
   // Доклады: объединяем по id.
