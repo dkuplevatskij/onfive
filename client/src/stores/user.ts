@@ -40,6 +40,8 @@ interface UserState {
   familyCode: string;
   /** PIN родительской панели (4 цифры) или null. */
   parentPin: string | null;
+  /** Семейные коды привязанных детей (для родителя). */
+  children: string[];
 
   /** Ник для рейтинга (пустое → показываем «Ученик»). */
   nickname: string;
@@ -65,6 +67,9 @@ interface UserState {
   setGrade: (grade: Grade) => void;
   setGoals: (goals: string[]) => void;
   setParentPin: (pin: string) => void;
+  /** Привязать ребёнка по семейному коду (для родителя). */
+  addChild: (code: string) => void;
+  removeChild: (code: string) => void;
   /** Частичное обновление полей профиля (ник, имя, фамилия, контакты, аватар). */
   setProfile: (patch: Partial<ProfileFields>) => void;
   toggleTheme: () => void;
@@ -114,6 +119,7 @@ export const useUserStore = create<UserState>()(
       goals: [],
       familyCode: makeFamilyCode(),
       parentPin: null,
+      children: [],
       nickname: "",
       firstName: "",
       lastName: "",
@@ -130,6 +136,13 @@ export const useUserStore = create<UserState>()(
       setGrade: (grade) => set({ grade }),
       setGoals: (goals) => set({ goals }),
       setParentPin: (pin) => set({ parentPin: pin }),
+      addChild: (code) =>
+        set((s) => {
+          const c = code.trim().toUpperCase();
+          return c && !s.children.includes(c) ? { children: [...s.children, c] } : {};
+        }),
+      removeChild: (code) =>
+        set((s) => ({ children: s.children.filter((c) => c !== code) })),
       setProfile: (patch) =>
         set((s) => ({
           nickname: (patch.nickname ?? s.nickname).slice(0, 24),

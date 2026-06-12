@@ -19,6 +19,20 @@ export interface CloudProfile extends GamificationSnapshot {
   avatar: string;
   grade: Grade | null;
   goals: string[];
+  /** Семейный код (ONF5-XXXXXX) для привязки родителя. */
+  familyCode: string;
+}
+
+/** Прогресс ребёнка для родителя (по семейному коду, через RPC). */
+export interface ChildProgress {
+  nickname: string;
+  avatar: string;
+  grade: Grade | null;
+  xp: number;
+  coins: number;
+  streak: number;
+  lastActive: string | null;
+  reportsCount: number;
 }
 
 /** Строка рейтинга (публичный срез профиля — без личных контактов). */
@@ -46,6 +60,7 @@ interface ProfileRow {
   streak: number | null;
   last_active: string | null;
   daily_bonus_date: string | null;
+  family_code: string | null;
 }
 
 /** Публичная строка, которую возвращает RPC рейтинга (только безопасные поля). */
@@ -93,6 +108,7 @@ export async function fetchProfile(userId: string): Promise<CloudProfile | null>
     streak: data.streak ?? 0,
     lastActive: data.last_active,
     dailyBonusDate: data.daily_bonus_date,
+    familyCode: data.family_code ?? "",
   };
 }
 
@@ -114,6 +130,7 @@ export async function upsertProfile(userId: string, p: CloudProfile): Promise<vo
     streak: p.streak,
     last_active: p.lastActive,
     daily_bonus_date: p.dailyBonusDate,
+    family_code: p.familyCode,
     updated_at: new Date().toISOString(),
   });
 }
@@ -172,4 +189,35 @@ export async function fetchLeaderboard(limit = 100): Promise<LeaderboardEntry[]>
     streak: r.streak ?? 0,
     grade: (r.grade as Grade | null) ?? null,
   }));
+}
+
+interface ChildRow {
+  nickname: string | null;
+  avatar: string | null;
+  grade: number | null;
+  xp: number | null;
+  coins: number | null;
+  streak: number | null;
+  last_active: string | null;
+  reports_count: number | null;
+}
+
+/** Прогресс ребёнка по семейному коду (для родителя). null — не найден. */
+export async function fetchChildByCode(code: string): Promise<ChildProgress | null> {
+  if (!supabase) return null;
+  const { data, error } = await supabase.rpc("onfive_child_progress", { p_code: code.trim() });
+  if (error || !data) return null;
+  const rows = data as ChildRow[];
+  if (rows.length === 0) return null;
+  const r = rows[0];
+  return {
+    nickname: r.nickname ?? "",
+    avatar: r.avatar ?? "",
+    grade: (r.grade as Grade | null) ?? null,
+    xp: r.xp ?? 0,
+    coins: r.coins ?? 0,
+    streak: r.streak ?? 0,
+    lastActive: r.last_active,
+    reportsCount: Number(r.reports_count ?? 0),
+  };
 }
