@@ -292,7 +292,7 @@ function Analytics({ onExit }: { onExit: () => void }) {
             <input
               value={codeInput}
               onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
-              placeholder="Код ребёнка · ONF5-XXXXXX"
+              placeholder="Код ребёнка · ON5-XXXXXX"
               className="w-full rounded-2xl bg-surface px-4 py-3 text-sm shadow-soft outline-none ring-1 ring-transparent transition focus:ring-violet placeholder:text-ink-faint"
             />
             <button

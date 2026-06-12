@@ -128,7 +128,7 @@ export function Leaderboard() {
                 value={codeInput}
                 onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
                 onKeyDown={(e) => e.key === "Enter" && addByCode()}
-                placeholder="Код друга · ONF5-XXXXXX"
+                placeholder="Код друга · ON5-XXXXXX"
                 className="w-full rounded-2xl bg-surface px-4 py-3 text-sm shadow-soft outline-none ring-1 ring-transparent transition focus:ring-violet placeholder:text-ink-faint"
               />
               <button

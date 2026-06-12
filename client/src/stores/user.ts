@@ -36,7 +36,7 @@ interface UserState {
   theme: Theme;
   /** Цели из онбординг-квиза (для персонализации). */
   goals: string[];
-  /** Семейный код для привязки родителя (ONF5-XXXXXX). */
+  /** Семейный код для привязки родителя (ON5-XXXXXX). */
   familyCode: string;
   /** PIN родительской панели (4 цифры) или null. */
   parentPin: string | null;
@@ -96,12 +96,12 @@ interface UserState {
   reset: () => void;
 }
 
-/** Генерирует семейный код вида ONF5-AB12CD. */
+/** Генерирует семейный код вида ON5-AB12CD. */
 function makeFamilyCode(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let s = "";
   for (let i = 0; i < 6; i++) s += chars[Math.floor(Math.random() * chars.length)];
-  return `ONF5-${s}`;
+  return `ON5-${s}`;
 }
 
 const freshDaily = (): DailyCounters => ({

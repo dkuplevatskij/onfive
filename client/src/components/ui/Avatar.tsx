@@ -1,10 +1,10 @@
 import { Sparkles } from "lucide-react";
-import { DEFAULT_AVATAR, isPhotoUrl, presetGradient } from "../../data/avatars";
+import { DEFAULT_AVATAR, dicebearSeed, dicebearUrl, isPhotoUrl } from "../../data/avatars";
 
 interface AvatarProps {
-  /** Значение из профиля: id пресета, URL фото или legacy-эмодзи. */
+  /** Значение из профиля: `dicebear:<seed>`, URL фото или legacy. */
   value: string;
-  /** Имя/ник — для инициала на градиентном аватаре. */
+  /** Имя/ник — для альтa и подписи в a11y. */
   name?: string;
   /** Сторона в пикселях. */
   size?: number;
@@ -13,46 +13,41 @@ interface AvatarProps {
 }
 
 /**
- * Универсальный аватар: фото / градиентный пресет с инициалом / legacy-эмодзи.
- * Если значение пустое — показываем дефолтный градиент с инициалом или искрой.
+ * Универсальный аватар: персонаж DiceBear / фото / legacy-значение / дефолт.
+ * SVG-персонажи масштабируются без потерь и кешируются по стабильному URL.
  */
 export function Avatar({ value, name = "", size = 48, className = "" }: AvatarProps) {
   const base = `grid shrink-0 place-items-center overflow-hidden ${className}`;
   const style: React.CSSProperties = { width: size, height: size };
-  const initial = name.trim().charAt(0).toUpperCase();
+  const altName = name.trim() || "Аватар";
 
+  // Фото (https://…).
   if (value && isPhotoUrl(value)) {
     return (
       <div className={base} style={style}>
-        <img src={value} alt="Аватар" className="h-full w-full object-cover" />
+        <img src={value} alt={altName} className="h-full w-full object-cover" />
       </div>
     );
   }
 
-  const gradient = value ? presetGradient(value) : null;
-
-  // Пресет или пустое значение → градиент + инициал (или искра).
-  if (gradient || !value) {
+  // Персонаж DiceBear. Пустое значение → дефолтный персонаж.
+  const seed = value ? dicebearSeed(value) : dicebearSeed(DEFAULT_AVATAR);
+  if (seed) {
     return (
-      <div
-        className={base}
-        style={{ ...style, backgroundImage: gradient ?? presetGradient(DEFAULT_AVATAR)! }}
-      >
-        {initial ? (
-          <span className="font-display font-extrabold text-white" style={{ fontSize: size * 0.42 }}>
-            {initial}
-          </span>
-        ) : (
-          <Sparkles className="text-white" size={size * 0.42} />
-        )}
+      <div className={`${base} bg-chip`} style={style}>
+        <img src={dicebearUrl(seed)} alt={altName} className="h-full w-full" loading="lazy" />
       </div>
     );
   }
 
-  // Legacy-эмодзи.
+  // Legacy: эмодзи или старые id-градиенты — показываем как символ/искру.
   return (
-    <div className={`${base} bg-chip`} style={style}>
-      <span style={{ fontSize: size * 0.52 }}>{value}</span>
+    <div className={`${base} bg-chip text-[var(--color-on-chip)]`} style={style}>
+      {value ? (
+        <span style={{ fontSize: size * 0.52 }}>{value}</span>
+      ) : (
+        <Sparkles size={size * 0.42} />
+      )}
     </div>
   );
 }

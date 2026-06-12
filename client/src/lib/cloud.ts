@@ -19,7 +19,7 @@ export interface CloudProfile extends GamificationSnapshot {
   avatar: string;
   grade: Grade | null;
   goals: string[];
-  /** Семейный код (ONF5-XXXXXX) для привязки родителя. */
+  /** Семейный код (ON5-XXXXXX) для привязки родителя. */
   familyCode: string;
 }
 
