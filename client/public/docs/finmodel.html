@@ -48,7 +48,7 @@
 <header class="hero"><div class="wrap hero-inner">
   <div class="hero-tag"><svg class="ic"><use href="#i-zap"/></svg>Финмодель · OnFive · Июнь 2026</div>
   <h1>OnFive<br><span>AI-репетитор по всем предметам, 5–11 класс</span></h1>
-  <p>Сократический AI-репетитор: не решает за ученика, а доводит до ответа. Монетизация — freemium-подписка (платит родитель) + сезонные пакеты ОГЭ/ЕГЭ. Главный рычаг экономики — низкая себестоимость AI (Claude Sonnet/Haiku) и контроль стоимости озвучки.</p>
+  <p>Сократический AI-репетитор: не решает за ученика, а доводит до ответа. Монетизация — freemium-подписка (платит родитель) + сезонные пакеты ОГЭ/ЕГЭ. Главный рычаг экономики — низкая себестоимость AI (Claude Sonnet/Haiku) и маршрутизация запросов Sonnet → Haiku.</p>
   <div class="hero-kpis">
     <div class="hkpi"><div class="hkpi-v num">₽1.45M</div><div class="hkpi-l">MRR на месяц 12 (база)</div><div class="hkpi-d">ARR ≈ ₽17M</div></div>
     <div class="hkpi"><div class="hkpi-v num">Месяц 8</div><div class="hkpi-l">Точка безубыточности</div><div class="hkpi-d">накопл. убыток ≈ ₽1.6M</div></div>
@@ -109,8 +109,7 @@
   <div class="cogs-grid" style="margin-bottom:24px">
     <div class="cogs-card"><div class="cogs-icon"><svg class="ic"><use href="#i-bot"/></svg></div><div class="cogs-name">Сообщение (Sonnet)</div><div class="cogs-price num">₽1.0</div></div>
     <div class="cogs-card"><div class="cogs-icon"><svg class="ic"><use href="#i-zap"/></svg></div><div class="cogs-name">Сообщение (Haiku)</div><div class="cogs-price num">₽0.33</div></div>
-    <div class="cogs-card warn"><div class="cogs-icon"><svg class="ic"><use href="#i-volume"/></svg></div><div class="cogs-name">Озвучка (ElevenLabs)</div><div class="cogs-price num">₽10.5</div></div>
-    <div class="cogs-card"><div class="cogs-icon"><svg class="ic"><use href="#i-mic"/></svg></div><div class="cogs-name">Голосовой ввод</div><div class="cogs-price num">₽0.3</div></div>
+    <div class="cogs-card"><div class="cogs-icon"><svg class="ic"><use href="#i-mic"/></svg></div><div class="cogs-name">Голосовой ввод (STT)</div><div class="cogs-price num">₽0.3</div></div>
     <div class="cogs-card"><div class="cogs-icon"><svg class="ic"><use href="#i-file"/></svg></div><div class="cogs-name">Генерация доклада</div><div class="cogs-price num">₽3</div></div>
     <div class="cogs-card"><div class="cogs-icon"><svg class="ic"><use href="#i-server"/></svg></div><div class="cogs-name">Инфра на юзера</div><div class="cogs-price num">₽0.5</div></div>
   </div>
@@ -125,7 +124,7 @@
         <tr><td><strong>Экзамен-пакет</strong></td><td>₽497 (₽1490/3 мес)</td><td>₽220</td><td><span class="pill pill-amber">~56%</span></td></tr>
       </tbody></table></div>
     <div class="note"><svg class="ic"><use href="#i-bulb"/></svg>
-      <span><strong>Озвучка решено убрана</strong> (ElevenLabs ₽10.5/ответ выжигал маржу) — вернём позже на бесплатном self-host движке <strong>Silero</strong>. Дополнительные рычаги: маршрутизация простых запросов на Haiku (×3 дешевле) + кэширование системного промпта → маржа Premium 75–80%.</span></div>
+      <span>Рычаги улучшения маржи: маршрутизация простых запросов на <strong>Haiku</strong> (×3 дешевле Sonnet) + кэширование системного промпта → маржа Premium достигает <strong>75–80%</strong>. Голосовой ввод (STT через Web Speech API) — бесплатен для пользователя и не несёт переменных расходов.</span></div>
   </div>
 </div></div>
 
@@ -139,7 +138,7 @@
         <tr><td><strong>AI API</strong><div style="font-size:12px;color:var(--ink4)">Claude (чат, доклады)</div></td><td>Активность</td><td><strong>~15%</strong> MRR</td></tr>
         <tr><td><strong>Эквайринг</strong><div style="font-size:12px;color:var(--ink4)">ЮKassa / СБП</div></td><td>Оборот</td><td><strong>3.5%</strong> MRR</td></tr>
       </tbody></table>
-      <div class="note"><svg class="ic"><use href="#i-bulb"/></svg><span>На месяце 12 (MRR ₽1.45M): AI ≈ ₽220K + эквайринг ≈ ₽51K. Маржа держится ~75% (озвучка убрана).</span></div></div>
+      <div class="note"><svg class="ic"><use href="#i-bulb"/></svg><span>На месяце 12 (MRR ₽1.45M): AI ≈ ₽220K + эквайринг ≈ ₽51K. Переменные ≈ ₽271K, валовая маржа ~75%.</span></div></div>
     <div class="card card-pad"><div class="card-title"><span class="icbox"><svg class="ic"><use href="#i-building"/></svg></span>Фиксированные — ₽300K/мес на старте</div>
       <table class="tbl"><thead><tr><th>Статья</th><th>Состав</th><th>₽/мес</th></tr></thead><tbody>
         <tr><td style="white-space:nowrap"><strong>ФОТ</strong></td><td style="font-size:12.5px">Разработка + контент/саппорт</td><td><strong>230 000</strong></td></tr>
@@ -242,12 +241,11 @@
     <div>
       <div class="risk risk-high"><div class="risk-num">1</div><div><div class="risk-title">Бесплатный «Репетитор AI» Яндекса</div><div class="risk-text">Бесплатный сократический AI в 75% школ. <strong>Митигация:</strong> он узкий (ЕГЭ математика/информатика) — берём широтой по всем предметам 5–11, ежедневным сценарием с домашкой, геймификацией и семейным тарифом.</div></div></div>
       <div class="risk risk-med"><div class="risk-num">2</div><div><div class="risk-title">Низкая конверсия free→paid / абуз free</div><div class="risk-text">При конверсии 2% безубыток сдвигается за горизонт. <strong>Митигация:</strong> жёсткие лимиты free, онбординг-воронка, триггерные апсейлы при упоре в лимит.</div></div></div>
-      <div class="risk risk-med"><div class="risk-num">3</div><div><div class="risk-title">Стоимость озвучки (в будущем)</div><div class="risk-text">ElevenLabs ₽10.5/ответ выжигал маржу — озвучка убрана. <strong>Митигация:</strong> вернём на self-host Silero (бесплатный русский голос) с лимитами.</div></div></div>
     </div>
     <div>
-      <div class="risk risk-med"><div class="risk-num">4</div><div><div class="risk-title">Рост цен LLM API и курс рубля</div><div class="risk-text">COGS привязан к Anthropic и курсу. <strong>Митигация:</strong> маршрутизация на Haiku (×3 дешевле), prompt caching, лимит max_tokens.</div></div></div>
-      <div class="risk risk-med"><div class="risk-num">5</div><div><div class="risk-title">Платёжная инфраструктура</div><div class="risk-text">ЮKassa ещё не подключена (Apple/Google в РФ ненадёжны). <strong>Митигация:</strong> веб-оплата + СБП + Telegram Payments; подключение шлюза — ~1 неделя.</div></div></div>
-      <div class="risk risk-med"><div class="risk-num">6</div><div><div class="risk-title">152-ФЗ — данные детей</div><div class="risk-text">Данные несовершеннолетних должны храниться в РФ. <strong>Митигация:</strong> graceful-fallback архитектура готова к переезду на self-hosted Supabase в Timeweb/Yandex.</div></div></div>
+      <div class="risk risk-med"><div class="risk-num">3</div><div><div class="risk-title">Рост цен LLM API и курс рубля</div><div class="risk-text">COGS привязан к Anthropic и курсу. <strong>Митигация:</strong> маршрутизация на Haiku (×3 дешевле), prompt caching, лимит max_tokens.</div></div></div>
+      <div class="risk risk-med"><div class="risk-num">4</div><div><div class="risk-title">Платёжная инфраструктура</div><div class="risk-text">ЮKassa ещё не подключена (Apple/Google в РФ ненадёжны). <strong>Митигация:</strong> веб-оплата + СБП + Telegram Payments; подключение шлюза — ~1 неделя.</div></div></div>
+      <div class="risk risk-med"><div class="risk-num">5</div><div><div class="risk-title">152-ФЗ — данные детей</div><div class="risk-text">Данные несовершеннолетних должны храниться в РФ. <strong>Митигация:</strong> graceful-fallback архитектура готова к переезду на self-hosted Supabase в Timeweb/Yandex.</div></div></div>
     </div>
   </div>
 </div></div>
