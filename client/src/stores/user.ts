@@ -36,12 +36,14 @@ interface UserState {
   theme: Theme;
   /** Цели из онбординг-квиза (для персонализации). */
   goals: string[];
-  /** Семейный код для привязки родителя (ONF5-XXXXXX). */
+  /** Семейный код для привязки родителя (ON5-XXXXXX). */
   familyCode: string;
   /** PIN родительской панели (4 цифры) или null. */
   parentPin: string | null;
   /** Семейные коды привязанных детей (для родителя). */
   children: string[];
+  /** Семейные коды добавленных друзей (для рейтинга «Друзья»). */
+  friends: string[];
 
   /** Ник для рейтинга (пустое → показываем «Ученик»). */
   nickname: string;
@@ -70,6 +72,9 @@ interface UserState {
   /** Привязать ребёнка по семейному коду (для родителя). */
   addChild: (code: string) => void;
   removeChild: (code: string) => void;
+  /** Добавить/убрать друга по семейному коду. */
+  addFriend: (code: string) => void;
+  removeFriend: (code: string) => void;
   /** Частичное обновление полей профиля (ник, имя, фамилия, контакты, аватар). */
   setProfile: (patch: Partial<ProfileFields>) => void;
   toggleTheme: () => void;
@@ -91,12 +96,12 @@ interface UserState {
   reset: () => void;
 }
 
-/** Генерирует семейный код вида ONF5-AB12CD. */
+/** Генерирует семейный код вида ON5-AB12CD. */
 function makeFamilyCode(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let s = "";
   for (let i = 0; i < 6; i++) s += chars[Math.floor(Math.random() * chars.length)];
-  return `ONF5-${s}`;
+  return `ON5-${s}`;
 }
 
 const freshDaily = (): DailyCounters => ({
@@ -120,6 +125,7 @@ export const useUserStore = create<UserState>()(
       familyCode: makeFamilyCode(),
       parentPin: null,
       children: [],
+      friends: [],
       nickname: "",
       firstName: "",
       lastName: "",
@@ -143,6 +149,15 @@ export const useUserStore = create<UserState>()(
         }),
       removeChild: (code) =>
         set((s) => ({ children: s.children.filter((c) => c !== code) })),
+      addFriend: (code) =>
+        set((s) => {
+          const c = code.trim().toUpperCase();
+          // Нельзя добавить свой же код.
+          if (!c || c === s.familyCode || s.friends.includes(c)) return {};
+          return { friends: [...s.friends, c] };
+        }),
+      removeFriend: (code) =>
+        set((s) => ({ friends: s.friends.filter((c) => c !== code) })),
       setProfile: (patch) =>
         set((s) => ({
           nickname: (patch.nickname ?? s.nickname).slice(0, 24),

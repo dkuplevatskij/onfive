@@ -5,7 +5,7 @@ import { ChevronLeft, Check, Send, AtSign, ImagePlus, Loader2 } from "lucide-rea
 import { useUserStore } from "../stores/user";
 import { useAuthStore } from "../stores/auth";
 import { Avatar } from "../components/ui/Avatar";
-import { AVATAR_PRESETS } from "../data/avatars";
+import { AVATAR_SEEDS, dicebearUrl } from "../data/avatars";
 import { uploadAvatar } from "../lib/avatar";
 import { isSupabaseConfigured } from "../lib/supabase";
 
@@ -109,20 +109,28 @@ export function ProfileEdit() {
       </div>
       {uploadError && <p className="mt-2 text-sm text-coral">{uploadError}</p>}
 
-      <div className="mt-4 grid grid-cols-6 gap-2.5">
-        {AVATAR_PRESETS.map((p) => (
-          <button
-            key={p.id}
-            onClick={() => update({ avatar: p.id })}
-            aria-label={`Аватар ${p.id}`}
-            style={{ backgroundImage: p.gradient }}
-            className={`press grid aspect-square place-items-center rounded-2xl shadow-soft transition ${
-              form.avatar === p.id ? "ring-2 ring-violet ring-offset-2 ring-offset-bg" : ""
-            }`}
-          >
-            {form.avatar === p.id && <Check size={18} className="text-white" />}
-          </button>
-        ))}
+      <div className="mt-4 grid grid-cols-4 gap-2.5">
+        {AVATAR_SEEDS.map((seed) => {
+          const val = `dicebear:${seed}`;
+          const active = form.avatar === val;
+          return (
+            <button
+              key={seed}
+              onClick={() => update({ avatar: val })}
+              aria-label={`Аватар ${seed}`}
+              className={`press relative grid aspect-square place-items-center overflow-hidden rounded-2xl bg-surface shadow-soft transition ${
+                active ? "ring-2 ring-violet ring-offset-2 ring-offset-bg" : ""
+              }`}
+            >
+              <img src={dicebearUrl(seed)} alt="" className="h-full w-full" loading="lazy" />
+              {active && (
+                <span className="absolute right-1.5 top-1.5 grid h-5 w-5 place-items-center rounded-full bg-violet text-white shadow-glow">
+                  <Check size={11} strokeWidth={3} />
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       <div className="mt-6 space-y-4">

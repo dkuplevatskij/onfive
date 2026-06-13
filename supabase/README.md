@@ -22,7 +22,8 @@
 2. **SQL Editor** → выполни `supabase/migrations/0001_init.sql`, затем
    `supabase/migrations/0002_avatars_storage.sql` (бакет `avatars` + политики
    для загрузки фото-аватаров), затем `supabase/migrations/0003_parent_link.sql`
-   (семейный код в профиле + функция прогресса ребёнка для родителя). Без 0002
+   (семейный код в профиле + функция прогресса ребёнка для родителя) и
+   `supabase/migrations/0004_friends.sql` (функция рейтинга друзей). Без 0002
    пресет-аватары работают, а загрузка фото будет недоступна.
 3. **Authentication → Providers → Anonymous Sign-Ins** → включи.
 4. **Project Settings → API** → скопируй `Project URL` и `anon public` ключ.

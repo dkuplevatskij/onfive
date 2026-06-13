@@ -19,7 +19,7 @@ export interface CloudProfile extends GamificationSnapshot {
   avatar: string;
   grade: Grade | null;
   goals: string[];
-  /** Семейный код (ONF5-XXXXXX) для привязки родителя. */
+  /** Семейный код (ON5-XXXXXX) для привязки родителя. */
   familyCode: string;
 }
 
@@ -200,6 +200,21 @@ interface ChildRow {
   streak: number | null;
   last_active: string | null;
   reports_count: number | null;
+}
+
+/** Рейтинг друзей по их семейным кодам (публичные поля, сортировка по XP). */
+export async function fetchFriends(codes: string[]): Promise<LeaderboardEntry[]> {
+  if (!supabase || codes.length === 0) return [];
+  const { data, error } = await supabase.rpc("onfive_friends", { p_codes: codes });
+  if (error || !data) return [];
+  return (data as LeaderboardRow[]).map((r) => ({
+    id: r.id,
+    nickname: r.nickname ?? "",
+    avatar: r.avatar ?? "",
+    xp: r.xp ?? 0,
+    streak: r.streak ?? 0,
+    grade: (r.grade as Grade | null) ?? null,
+  }));
 }
 
 /** Прогресс ребёнка по семейному коду (для родителя). null — не найден. */
