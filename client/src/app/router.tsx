@@ -38,6 +38,7 @@ const ReportNew = lazy(() => import("../pages/ReportNew").then((m) => ({ default
 const ReportWorkspace = lazy(() =>
   import("../pages/ReportWorkspace").then((m) => ({ default: m.ReportWorkspace })),
 );
+const Upgrade = lazy(() => import("../pages/Upgrade").then((m) => ({ default: m.Upgrade })));
 
 export const router = createBrowserRouter([
   {
@@ -69,6 +70,7 @@ export const router = createBrowserRouter([
           { path: "/reports", element: <ReportsList /> },
           { path: "/reports/new", element: <ReportNew /> },
           { path: "/reports/:id", element: <ReportWorkspace /> },
+          { path: "/upgrade", element: <Upgrade /> },
         ],
       },
     ],

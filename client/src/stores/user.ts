@@ -70,6 +70,9 @@ interface UserState {
   /** Привязать ребёнка по семейному коду (для родителя). */
   addChild: (code: string) => void;
   removeChild: (code: string) => void;
+  /** Подписка активна (Premium / Family). По умолчанию false = Free. */
+  isPremium: boolean;
+  setPremium: (value: boolean) => void;
   /** Частичное обновление полей профиля (ник, имя, фамилия, контакты, аватар). */
   setProfile: (patch: Partial<ProfileFields>) => void;
   toggleTheme: () => void;
@@ -117,6 +120,7 @@ export const useUserStore = create<UserState>()(
       grade: null,
       theme: "dark",
       goals: [],
+      isPremium: false,
       familyCode: makeFamilyCode(),
       parentPin: null,
       children: [],
@@ -135,6 +139,7 @@ export const useUserStore = create<UserState>()(
 
       setGrade: (grade) => set({ grade }),
       setGoals: (goals) => set({ goals }),
+      setPremium: (value) => set({ isPremium: value }),
       setParentPin: (pin) => set({ parentPin: pin }),
       addChild: (code) =>
         set((s) => {
