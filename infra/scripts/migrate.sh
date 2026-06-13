@@ -14,15 +14,29 @@ REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 MIGRATIONS_DIR="$REPO_ROOT/supabase/migrations"
 FILTER="${1:-}"
 
-# Находим контейнер Postgres по образу supabase/postgres
-DB_CONTAINER="$(docker ps --filter "ancestor=supabase/postgres" --format '{{.Names}}' | head -n1)"
+# Находим контейнер Postgres СТРОГО по образу supabase/postgres.
+# ВАЖНО: НЕ искать просто "postgres" или "db" в именах — Coolify держит свой
+# coolify-db (тоже Postgres), и попасть туда означает накатить миграции
+# OnFive в служебную БД панели. Поэтому фильтруем только по нашему образу.
+DB_CONTAINER="$(docker ps --filter 'ancestor=supabase/postgres' --format '{{.Names}}' | head -n1)"
+
+# Резервный поиск: по полному имени образа через docker inspect (на случай,
+# если в ancestor попадёт пустота из-за конкретного тега). Берём контейнер,
+# чей Image начинается с "supabase/postgres".
 if [[ -z "$DB_CONTAINER" ]]; then
-  # запасной поиск по имени
-  DB_CONTAINER="$(docker ps --format '{{.Names}}' | grep -i 'db\|postgres' | head -n1)"
+  DB_CONTAINER="$(docker ps --format '{{.Names}}\t{{.Image}}' \
+    | awk -F'\t' '$2 ~ /^supabase\/postgres/ {print $1; exit}')"
 fi
 
 if [[ -z "$DB_CONTAINER" ]]; then
-  echo "❌ Не найден запущенный контейнер Postgres. Запущен ли стек?"
+  echo "❌ Не найден запущенный контейнер supabase/postgres. Запущен ли стек?"
+  echo "   Подсказка: docker ps --format '{{.Names}}\t{{.Image}}' | grep supabase"
+  exit 1
+fi
+
+# Sanity-check: не coolify-db ли это.
+if [[ "$DB_CONTAINER" == *"coolify-db"* ]]; then
+  echo "❌ Поймали coolify-db, а не supabase/postgres. Прерываю — это служебная БД Coolify."
   exit 1
 fi
 
