@@ -13,6 +13,11 @@ build/
 .env.local
 .env.*.local
 !.env.example
+infra/.env
+
+# Supabase volumes (данные БД, хранилище — не в репо)
+infra/volumes/db/data/
+infra/volumes/storage/
 
 # Logs
 logs/
