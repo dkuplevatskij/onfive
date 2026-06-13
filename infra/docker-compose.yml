@@ -60,10 +60,7 @@ services:
       SUPABASE_ANON_KEY: ${ANON_KEY}
       SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
       AUTH_JWT_SECRET: ${JWT_SECRET}
-      LOGFLARE_API_KEY: ${LOGFLARE_API_KEY:-}
-      LOGFLARE_URL: http://analytics:4000
-      NEXT_PUBLIC_ENABLE_LOGS: "true"
-      NEXT_ANALYTICS_BACKEND_PROVIDER: postgres
+      NEXT_PUBLIC_ENABLE_LOGS: "false"
     logging: *default-logging
 
   # ─── Kong (API Gateway) ───────────────────────────────────────────
@@ -242,39 +239,12 @@ services:
       PG_META_DB_PASSWORD: ${POSTGRES_PASSWORD}
     logging: *default-logging
 
-  # ─── Analytics (Logflare) ─────────────────────────────────────────
-  analytics:
-    image: supabase/logflare:1.4.0
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "--max-time", "5", "--fail", "http://localhost:4000/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      LOGFLARE_NODE_HOST: 127.0.0.1
-      DB_USERNAME: supabase_admin
-      DB_DATABASE: ${POSTGRES_DB:-postgres}
-      DB_HOSTNAME: db
-      DB_PORT: 5432
-      DB_PASSWORD: ${POSTGRES_PASSWORD}
-      DB_SCHEMA: _analytics
-      LOGFLARE_API_KEY: ${LOGFLARE_API_KEY}
-      LOGFLARE_SINGLE_TENANT: "true"
-      LOGFLARE_SUPABASE_MODE: "true"
-      LOGFLARE_MIN_CLUSTER_SIZE: 1
-      RELEASE_COOKIE: cookie
-    logging: *default-logging
-
   # ─── Functions (Edge) ─────────────────────────────────────────────
   functions:
     image: supabase/edge-runtime:v1.67.4
     restart: unless-stopped
     depends_on:
-      analytics:
+      db:
         condition: service_healthy
     environment:
       JWT_SECRET: ${JWT_SECRET}
