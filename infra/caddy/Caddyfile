@@ -1,0 +1,37 @@
+# Caddy для OnFive. Авто-SSL через Let's Encrypt.
+# Всё, к чему обращается браузер, — на российском сервере (доступно из РФ
+# без VPN). Claude недоступен с РФ-IP, поэтому /api/* проксируется на
+# Vercel сервер-к-серверу (этот путь работает), а Vercel уже зовёт Claude.
+{
+	email noreply@onfive.pro
+}
+
+# ─── API Supabase ───────────────────────────────────────────────────
+api.onfive.pro {
+	reverse_proxy kong:8000
+}
+
+# ─── www → apex ─────────────────────────────────────────────────────
+www.onfive.pro {
+	redir https://onfive.pro{uri} permanent
+}
+
+# ─── Фронтенд (SPA) ─────────────────────────────────────────────────
+onfive.pro {
+	encode zstd gzip
+
+	# AI-чат: Claude отвечает только вне РФ. Проксируем на Vercel-функцию
+	# (/api/chat). Host подменяем на домен Vercel, иначе он не смаршрутит.
+	handle /api/* {
+		reverse_proxy https://onfive.vercel.app {
+			header_up Host onfive.vercel.app
+		}
+	}
+
+	# Статика собранного Vite-приложения с SPA-фолбэком на index.html.
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}

@@ -8,8 +8,6 @@
 # Обновление:
 #   docker compose pull && docker compose up -d --remove-orphans
 
-version: "3.8"
-
 x-logging: &default-logging
   driver: json-file
   options:
@@ -19,7 +17,14 @@ x-logging: &default-logging
 services:
   # ─── PostgreSQL ───────────────────────────────────────────────────
   db:
-    image: supabase/postgres:15.8.1.060
+    # Свой образ: init-скрипты (пароли ролям, JWT, схемы) запечены внутрь —
+    # см. infra/db/Dockerfile. Так они не зависят от bind-mount'ов, которые
+    # в Coolify теряются вместе с эфемерной папкой артефактов и приводят к
+    # «password authentication failed» во всех зависимых сервисах.
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    image: onfive/postgres:15.8.1.060
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres", "-d", "postgres"]
@@ -38,18 +43,6 @@ services:
       JWT_EXP: ${JWT_EXP:-3600}
     volumes:
       - db_data:/var/lib/postgresql/data
-      # ВАЖНО: монтируем КАЖДЫЙ файл в подпапку init-scripts/ или migrations/,
-      # а НЕ весь каталог в /docker-entrypoint-initdb.d. Образ supabase/postgres
-      # держит там СВОИ скрипты, создающие базовые роли (authenticator,
-      # supabase_admin, postgres, supabase_auth_admin, supabase_storage_admin).
-      # Если смонтировать каталог целиком — встроенные скрипты маскируются,
-      # роли не создаются, и наш ALTER USER падает с «role does not exist»,
-      # а за ним auth/rest/realtime — с «password authentication failed».
-      # Пути 1:1 как в апстриме supabase/supabase docker/docker-compose.yml.
-      - ./volumes/db/init/00-roles.sql:/docker-entrypoint-initdb.d/init-scripts/99-roles.sql:Z
-      - ./volumes/db/init/01-jwt.sql:/docker-entrypoint-initdb.d/init-scripts/99-jwt.sql:Z
-      - ./volumes/db/init/02-realtime.sql:/docker-entrypoint-initdb.d/migrations/99-realtime.sql:Z
-      - ./volumes/db/init/03-webhooks.sql:/docker-entrypoint-initdb.d/init-scripts/98-webhooks.sql:Z
     logging: *default-logging
 
   # ─── Studio (Admin UI) ────────────────────────────────────────────
@@ -123,10 +116,13 @@ services:
       GOTRUE_DISABLE_SIGNUP: ${DISABLE_SIGNUP:-false}
       GOTRUE_JWT_ADMIN_ROLES: service_role
       GOTRUE_JWT_AUD: authenticated
+      # Роль по умолчанию в выдаваемых JWT. Без неё claim "role" пустой,
+      # PostgREST делает SET ROLE "" и падает с «role "" does not exist» (401/400).
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
       GOTRUE_JWT_DEFAULT_EXP: ${JWT_EXP:-3600}
       GOTRUE_JWT_SECRET: ${JWT_SECRET}
       GOTRUE_MAILER_AUTOCONFIRM: ${ENABLE_EMAIL_AUTOCONFIRM:-true}
-      GOTRUE_SMTP_ADMIN_EMAIL: ${SMTP_ADMIN_EMAIL:-noreply@onfive.ru}
+      GOTRUE_SMTP_ADMIN_EMAIL: ${SMTP_ADMIN_EMAIL:-noreply@onfive.pro}
       GOTRUE_SMTP_HOST: ${SMTP_HOST:-}
       GOTRUE_SMTP_PORT: ${SMTP_PORT:-587}
       GOTRUE_SMTP_USER: ${SMTP_USER:-}
@@ -158,29 +154,9 @@ services:
     logging: *default-logging
 
   # ─── Realtime ─────────────────────────────────────────────────────
-  realtime:
-    image: supabase/realtime:v2.34.47
-    restart: unless-stopped
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      PORT: 4000
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_USER: supabase_admin
-      DB_PASSWORD: ${POSTGRES_PASSWORD}
-      DB_NAME: ${POSTGRES_DB:-postgres}
-      DB_AFTER_CONNECT_QUERY: "SET search_path TO _realtime"
-      DB_ENC_KEY: ${REALTIME_ENC_KEY}
-      API_JWT_SECRET: ${JWT_SECRET}
-      SECRET_KEY_BASE: ${REALTIME_SECRET_KEY_BASE}
-      ERL_AFLAGS: -proto_dist inet_tcp
-      ENABLE_TAILSCALE: "false"
-      DNS_NODES: "''"
-    command: >
-      sh -c "/app/bin/migrate && /app/bin/realtime eval 'Realtime.Release.seeds(Realtime.Repo)' && /app/bin/server"
-    logging: *default-logging
+  # Отключён: для OnFive не нужен (реалтайм-подписки не используются),
+  # а на self-hosted он капризен при старте. Если понадобится — вернуть
+  # сервис и маршрут realtime-v1 в kong.yml из истории git.
 
   # ─── Storage ──────────────────────────────────────────────────────
   storage:
@@ -251,24 +227,39 @@ services:
     logging: *default-logging
 
   # ─── Functions (Edge) ─────────────────────────────────────────────
-  functions:
-    image: supabase/edge-runtime:v1.67.4
+  # Отключён: AI-логика OnFive живёт на Vercel (api/chat.ts), edge-функции
+  # Supabase не используются. Если понадобятся — вернуть сервис и маршрут
+  # functions-v1 в kong.yml из истории git.
+
+  # ─── Caddy (reverse proxy + авто-SSL) ─────────────────────────────
+  # Терминирует HTTPS для api.onfive.pro и проксирует на kong по внутренней
+  # docker-сети. Сертификат Let's Encrypt получается автоматически (нужно,
+  # чтобы DNS api.onfive.pro указывал на сервер и были открыты порты 80/443).
+  caddy:
+    image: caddy:2.8-alpine
     restart: unless-stopped
     depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      JWT_SECRET: ${JWT_SECRET}
-      SUPABASE_URL: http://kong:8000
-      SUPABASE_ANON_KEY: ${ANON_KEY}
-      SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
-      SUPABASE_DB_URL: postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-postgres}
-      VERIFY_JWT: "false"
+      - kong
+    # Хост резолвит через systemd-resolved (127.0.0.53), который недоступен
+    # изнутри контейнера — без явных DNS Caddy не достучится до Let's Encrypt
+    # и не получит сертификат. Задаём публичные резолверы.
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
+    ports:
+      - "80:80"
+      - "443:443"
     volumes:
-      - ./volumes/functions:/home/deno/functions:Z
-    command: ["start", "--main-service", "/home/deno/functions/main"]
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      # Собранный фронтенд (Vite → client/dist). Сборку делает scripts/deploy.sh
+      # перед запуском, чтобы статика существовала к моменту старта Caddy.
+      - ../client/dist:/srv:ro
+      - caddy_data:/data
+      - caddy_config:/config
     logging: *default-logging
 
 volumes:
   db_data:
   storage_data:
+  caddy_data:
+  caddy_config:
