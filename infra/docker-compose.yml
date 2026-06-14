@@ -8,8 +8,6 @@
 # Обновление:
 #   docker compose pull && docker compose up -d --remove-orphans
 
-version: "3.8"
-
 x-logging: &default-logging
   driver: json-file
   options:
@@ -239,6 +237,12 @@ services:
     restart: unless-stopped
     depends_on:
       - kong
+    # Хост резолвит через systemd-resolved (127.0.0.53), который недоступен
+    # изнутри контейнера — без явных DNS Caddy не достучится до Let's Encrypt
+    # и не получит сертификат. Задаём публичные резолверы.
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
     ports:
       - "80:80"
       - "443:443"
