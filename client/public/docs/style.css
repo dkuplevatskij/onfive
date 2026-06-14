@@ -1,3 +1,15 @@
+/* Шрифты self-host: Google Fonts недоступны/тормозят из РФ, поэтому
+   раздаём woff2 с того же сервера. Латинские subset'ы — кириллица в
+   заголовках/тексте и так шла системным fallback'ом (эти шрифты её не
+   покрывают), поведение не меняется. */
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:300;font-display:swap;src:url('fonts/dm-sans-300.woff2') format('woff2')}
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/dm-sans-400.woff2') format('woff2')}
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:500;font-display:swap;src:url('fonts/dm-sans-500.woff2') format('woff2')}
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:600;font-display:swap;src:url('fonts/dm-sans-600.woff2') format('woff2')}
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:700;font-display:swap;src:url('fonts/dm-sans-700.woff2') format('woff2')}
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:800;font-display:swap;src:url('fonts/dm-sans-800.woff2') format('woff2')}
+@font-face{font-family:'Bebas Neue';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/bebas-neue-400.woff2') format('woff2')}
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --ink:#0A0A12;--ink2:#1E1E2E;--ink3:#3A3A52;--ink4:#7B7B9A;--ink5:#B8B8CC;
