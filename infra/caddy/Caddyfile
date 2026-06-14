@@ -1,0 +1,10 @@
+# Caddy для OnFive Supabase. Авто-SSL через Let's Encrypt.
+# api.onfive.pro → kong:8000 (внутренняя docker-сеть).
+{
+	# email для Let's Encrypt (уведомления об истечении сертификата)
+	email noreply@onfive.pro
+}
+
+api.onfive.pro {
+	reverse_proxy kong:8000
+}

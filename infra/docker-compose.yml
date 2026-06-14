@@ -153,29 +153,9 @@ services:
     logging: *default-logging
 
   # ─── Realtime ─────────────────────────────────────────────────────
-  realtime:
-    image: supabase/realtime:v2.34.47
-    restart: unless-stopped
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      PORT: 4000
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_USER: supabase_admin
-      DB_PASSWORD: ${POSTGRES_PASSWORD}
-      DB_NAME: ${POSTGRES_DB:-postgres}
-      DB_AFTER_CONNECT_QUERY: "SET search_path TO _realtime"
-      DB_ENC_KEY: ${REALTIME_ENC_KEY}
-      API_JWT_SECRET: ${JWT_SECRET}
-      SECRET_KEY_BASE: ${REALTIME_SECRET_KEY_BASE}
-      ERL_AFLAGS: -proto_dist inet_tcp
-      ENABLE_TAILSCALE: "false"
-      DNS_NODES: "''"
-    command: >
-      sh -c "/app/bin/migrate && /app/bin/realtime eval 'Realtime.Release.seeds(Realtime.Repo)' && /app/bin/server"
-    logging: *default-logging
+  # Отключён: для OnFive не нужен (реалтайм-подписки не используются),
+  # а на self-hosted он капризен при старте. Если понадобится — вернуть
+  # сервис и маршрут realtime-v1 в kong.yml из истории git.
 
   # ─── Storage ──────────────────────────────────────────────────────
   storage:
@@ -246,24 +226,30 @@ services:
     logging: *default-logging
 
   # ─── Functions (Edge) ─────────────────────────────────────────────
-  functions:
-    image: supabase/edge-runtime:v1.67.4
+  # Отключён: AI-логика OnFive живёт на Vercel (api/chat.ts), edge-функции
+  # Supabase не используются. Если понадобятся — вернуть сервис и маршрут
+  # functions-v1 в kong.yml из истории git.
+
+  # ─── Caddy (reverse proxy + авто-SSL) ─────────────────────────────
+  # Терминирует HTTPS для api.onfive.pro и проксирует на kong по внутренней
+  # docker-сети. Сертификат Let's Encrypt получается автоматически (нужно,
+  # чтобы DNS api.onfive.pro указывал на сервер и были открыты порты 80/443).
+  caddy:
+    image: caddy:2.8-alpine
     restart: unless-stopped
     depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      JWT_SECRET: ${JWT_SECRET}
-      SUPABASE_URL: http://kong:8000
-      SUPABASE_ANON_KEY: ${ANON_KEY}
-      SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
-      SUPABASE_DB_URL: postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-postgres}
-      VERIFY_JWT: "false"
+      - kong
+    ports:
+      - "80:80"
+      - "443:443"
     volumes:
-      - ./volumes/functions:/home/deno/functions:Z
-    command: ["start", "--main-service", "/home/deno/functions/main"]
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
     logging: *default-logging
 
 volumes:
   db_data:
   storage_data:
+  caddy_data:
+  caddy_config:
