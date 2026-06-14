@@ -19,7 +19,14 @@ x-logging: &default-logging
 services:
   # ─── PostgreSQL ───────────────────────────────────────────────────
   db:
-    image: supabase/postgres:15.8.1.060
+    # Свой образ: init-скрипты (пароли ролям, JWT, схемы) запечены внутрь —
+    # см. infra/db/Dockerfile. Так они не зависят от bind-mount'ов, которые
+    # в Coolify теряются вместе с эфемерной папкой артефактов и приводят к
+    # «password authentication failed» во всех зависимых сервисах.
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    image: onfive/postgres:15.8.1.060
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres", "-d", "postgres"]
@@ -38,18 +45,6 @@ services:
       JWT_EXP: ${JWT_EXP:-3600}
     volumes:
       - db_data:/var/lib/postgresql/data
-      # ВАЖНО: монтируем КАЖДЫЙ файл в подпапку init-scripts/ или migrations/,
-      # а НЕ весь каталог в /docker-entrypoint-initdb.d. Образ supabase/postgres
-      # держит там СВОИ скрипты, создающие базовые роли (authenticator,
-      # supabase_admin, postgres, supabase_auth_admin, supabase_storage_admin).
-      # Если смонтировать каталог целиком — встроенные скрипты маскируются,
-      # роли не создаются, и наш ALTER USER падает с «role does not exist»,
-      # а за ним auth/rest/realtime — с «password authentication failed».
-      # Пути 1:1 как в апстриме supabase/supabase docker/docker-compose.yml.
-      - ./volumes/db/init/00-roles.sql:/docker-entrypoint-initdb.d/init-scripts/99-roles.sql:Z
-      - ./volumes/db/init/01-jwt.sql:/docker-entrypoint-initdb.d/init-scripts/99-jwt.sql:Z
-      - ./volumes/db/init/02-realtime.sql:/docker-entrypoint-initdb.d/migrations/99-realtime.sql:Z
-      - ./volumes/db/init/03-webhooks.sql:/docker-entrypoint-initdb.d/init-scripts/98-webhooks.sql:Z
     logging: *default-logging
 
   # ─── Studio (Admin UI) ────────────────────────────────────────────
