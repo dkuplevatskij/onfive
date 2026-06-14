@@ -116,6 +116,9 @@ services:
       GOTRUE_DISABLE_SIGNUP: ${DISABLE_SIGNUP:-false}
       GOTRUE_JWT_ADMIN_ROLES: service_role
       GOTRUE_JWT_AUD: authenticated
+      # Роль по умолчанию в выдаваемых JWT. Без неё claim "role" пустой,
+      # PostgREST делает SET ROLE "" и падает с «role "" does not exist» (401/400).
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
       GOTRUE_JWT_DEFAULT_EXP: ${JWT_EXP:-3600}
       GOTRUE_JWT_SECRET: ${JWT_SECRET}
       GOTRUE_MAILER_AUTOCONFIRM: ${ENABLE_EMAIL_AUTOCONFIRM:-true}
