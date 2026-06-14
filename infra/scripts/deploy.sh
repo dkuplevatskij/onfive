@@ -79,6 +79,19 @@ if docker ps --format '{{.Names}}' | grep -q '^coolify-proxy$'; then
   docker stop coolify-proxy >/dev/null 2>&1 || true
 fi
 
+# Берём секреты из .env (нужен ANON_KEY для сборки фронта).
+set -a; . ./"$ENV_FILE"; set +a
+
+echo "=== Сборка фронтенда (Vite → client/dist) ==="
+# Собираем в одноразовом node-контейнере прямо на сервере. VITE_*-переменные
+# инлайнятся в бандл на этапе сборки. dist затем раздаёт Caddy (см. compose).
+REPO_ROOT="$(cd .. && pwd)"
+docker run --rm \
+  -v "$REPO_ROOT":/app -w /app \
+  -e VITE_SUPABASE_URL="https://api.onfive.pro" \
+  -e VITE_SUPABASE_ANON_KEY="$ANON_KEY" \
+  node:20-alpine sh -c "npm ci && npm run build"
+
 echo "=== Сборка образа Postgres и запуск стека ==="
 docker compose up -d --build --remove-orphans
 

@@ -251,6 +251,9 @@ services:
       - "443:443"
     volumes:
       - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      # Собранный фронтенд (Vite → client/dist). Сборку делает scripts/deploy.sh
+      # перед запуском, чтобы статика существовала к моменту старта Caddy.
+      - ../client/dist:/srv:ro
       - caddy_data:/data
       - caddy_config:/config
     logging: *default-logging
